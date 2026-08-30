@@ -1,0 +1,65 @@
+[
+    {
+        "id": 1,
+        "nombre": "Shampoo",
+        "descripcion": "",
+        "tipo": "Producto",
+        "estado": "Activo"
+    },
+    {
+        "id": 2,
+        "nombre": "Acondicionadores",
+        "descripcion": "",
+        "tipo": "Producto",
+        "estado": "Activo"
+    },
+    {
+        "id": 3,
+        "nombre": "Tratamientos",
+        "descripcion": "",
+        "tipo": "Producto",
+        "estado": "Activo"
+    },
+    {
+        "id": 4,
+        "nombre": "Tintes",
+        "descripcion": "",
+        "tipo": "Producto",
+        "estado": "Activo"
+    },
+    {
+        "id": 5,
+        "nombre": "Barba",
+        "descripcion": "",
+        "tipo": "Producto",
+        "estado": "Activo"
+    },
+    {
+        "id": 6,
+        "nombre": "Peinado",
+        "descripcion": "",
+        "tipo": "Producto",
+        "estado": "Activo"
+    },
+    {
+        "id": 7,
+        "nombre": "Manicure",
+        "descripcion": "",
+        "tipo": "Producto",
+        "estado": "Activo"
+    },
+    {
+        "id": 8,
+        "nombre": "Pedicure",
+        "descripcion": "",
+        "tipo": "Producto",
+        "estado": "Activo"
+    },
+    {
+        "id": 9,
+        "nombre": "Accesorios",
+        "descripcion": "",
+        "tipo": "Producto",
+        "estado": "Activo"
+    }
+]

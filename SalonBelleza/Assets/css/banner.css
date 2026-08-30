@@ -1,0 +1,49 @@
+.hero{
+
+    height:100vh;
+
+    background:url("../img/banner/banner.jpg");
+
+    background-size:cover;
+
+    background-position:center;
+
+    position:relative;
+
+}
+
+.overlay{
+
+    background:rgba(0,0,0,.65);
+
+    width:100%;
+    height:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.hero-contenido{
+
+    text-align:center;
+    color:white;
+
+}
+
+.hero h1{
+
+    font-size:70px;
+
+}
+
+.hero p{
+
+    font-size:24px;
+
+    margin:25px 0;
+
+}

@@ -1,0 +1,27 @@
+.navbar{
+
+    background:#111111 !important;
+
+}
+
+.navbar-brand{
+
+    color:#D4AF37 !important;
+    font-size:30px;
+    font-weight:bold;
+
+}
+
+.nav-link{
+
+    color:white !important;
+    margin-left:20px;
+    transition:.3s;
+
+}
+
+.nav-link:hover{
+
+    color:#D4AF37 !important;
+
+}

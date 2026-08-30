@@ -1,0 +1,53 @@
+@media(max-width:991px){
+
+.hero h1{
+
+font-size:45px;
+
+}
+
+.hero p{
+
+font-size:20px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.hero{
+
+height:80vh;
+
+}
+
+h2{
+
+font-size:35px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.hero h1{
+
+font-size:35px;
+
+}
+
+.hero p{
+
+font-size:18px;
+
+}
+
+.btn-principal{
+
+padding:12px 30px;
+
+}
+
+}

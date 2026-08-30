@@ -1,0 +1,8 @@
+# Config local (credenciales sensibles, si aplica)
+
+# Sistema
+Thumbs.db
+.DS_Store
+
+# Editor
+.vscode/

@@ -1,0 +1,127 @@
+[
+    {
+        "id": 5,
+        "numero_pedido": "PED-1005",
+        "cliente": "Orlando Gutierrez",
+        "telefono": "60394918",
+        "correo": "orlandogc2195@gmail.com",
+        "direccion": "Retiro en salon",
+        "metodo_pago": "SINPE",
+        "estado": "Pagado",
+        "tipo_entrega": "retiro",
+        "costo_envio": 0,
+        "total": 21420,
+        "observaciones": "",
+        "fecha": "2026-08-18 18:02:11",
+        "items": [
+            {
+                "producto": "Producto",
+                "cantidad": 1,
+                "precio": 21420
+            }
+        ],
+        "comprobante": "\/uploads\/comprobantes\/cmp_1787068931_3e9894dd.jpeg"
+    },
+    {
+        "id": 4,
+        "numero_pedido": "PED-1004",
+        "cliente": "Orlando Gutierrez",
+        "telefono": "60394918",
+        "correo": "orlandogc2195@gmail.com",
+        "direccion": "la garita alajuela",
+        "metodo_pago": "SINPE",
+        "estado": "Pagado",
+        "tipo_entrega": "envio",
+        "costo_envio": 3500,
+        "total": 11690,
+        "observaciones": "",
+        "fecha": "2026-08-18 17:56:30",
+        "items": [
+            {
+                "producto": "Producto",
+                "cantidad": 1,
+                "precio": 8190
+            }
+        ],
+        "comprobante": "\/uploads\/comprobantes\/cmp_1787068590_857ea6e5.jpeg"
+    },
+    {
+        "id": 3,
+        "numero_pedido": "PED-1003",
+        "cliente": "Ana Vargas",
+        "telefono": "8888-3333",
+        "correo": "ana@email.com",
+        "direccion": "Heredia, San Francisco",
+        "metodo_pago": "SINPE",
+        "estado": "Pendiente",
+        "tipo_entrega": "envio",
+        "costo_envio": 0,
+        "total": 12000,
+        "observaciones": "Llamar antes de entregar.",
+        "fecha": "2026-07-27 09:20:00",
+        "items": [
+            {
+                "producto": "Producto",
+                "cantidad": 1,
+                "precio": 12000
+            }
+        ],
+        "comprobante": ""
+    },
+    {
+        "id": 2,
+        "numero_pedido": "PED-1002",
+        "cliente": "Jose Ramirez",
+        "telefono": "8888-2222",
+        "correo": "jose@email.com",
+        "direccion": "Cartago, El Tejar",
+        "metodo_pago": "SINPE",
+        "estado": "Pagado",
+        "tipo_entrega": "envio",
+        "costo_envio": 0,
+        "total": 18000,
+        "observaciones": "",
+        "fecha": "2026-07-26 14:40:00",
+        "items": [
+            {
+                "producto": "Producto",
+                "cantidad": 2,
+                "precio": 9000
+            }
+        ],
+        "comprobante": ""
+    },
+    {
+        "id": 1,
+        "numero_pedido": "PED-1001",
+        "cliente": "Maria Lopez",
+        "telefono": "8888-1111",
+        "correo": "maria@email.com",
+        "direccion": "San Jose, Desamparados, Centro",
+        "metodo_pago": "SINPE",
+        "estado": "Pagado",
+        "tipo_entrega": "envio",
+        "costo_envio": 0,
+        "total": 28500,
+        "observaciones": "Entregar en horario de tarde.",
+        "fecha": "2026-07-25 10:15:00",
+        "items": [
+            {
+                "producto": "Producto",
+                "cantidad": 1,
+                "precio": 9500
+            },
+            {
+                "producto": "Producto",
+                "cantidad": 1,
+                "precio": 9000
+            },
+            {
+                "producto": "Producto",
+                "cantidad": 1,
+                "precio": 10000
+            }
+        ],
+        "comprobante": ""
+    }
+]

@@ -1,0 +1,72 @@
+[
+    {
+        "id": 1,
+        "nombre": "Corte Caballero",
+        "categoria": "",
+        "descripcion": "Corte",
+        "duracion": 30,
+        "precio": 6000,
+        "imagen": "",
+        "estado": "Activo"
+    },
+    {
+        "id": 2,
+        "nombre": "Corte Dama",
+        "categoria": "",
+        "descripcion": "Corte",
+        "duracion": 60,
+        "precio": 9000,
+        "imagen": "",
+        "estado": "Activo"
+    },
+    {
+        "id": 3,
+        "nombre": "Barba",
+        "categoria": "",
+        "descripcion": "Perfilado",
+        "duracion": 20,
+        "precio": 4000,
+        "imagen": "",
+        "estado": "Activo"
+    },
+    {
+        "id": 4,
+        "nombre": "Manicure",
+        "categoria": "",
+        "descripcion": "Servicio",
+        "duracion": 60,
+        "precio": 10000,
+        "imagen": "",
+        "estado": "Activo"
+    },
+    {
+        "id": 5,
+        "nombre": "Pedicure",
+        "categoria": "",
+        "descripcion": "Servicio",
+        "duracion": 60,
+        "precio": 12000,
+        "imagen": "",
+        "estado": "Activo"
+    },
+    {
+        "id": 6,
+        "nombre": "Balayage",
+        "categoria": "",
+        "descripcion": "Color",
+        "duracion": 180,
+        "precio": 65000,
+        "imagen": "",
+        "estado": "Activo"
+    },
+    {
+        "id": 7,
+        "nombre": "Keratina",
+        "categoria": "",
+        "descripcion": "Tratamiento",
+        "duracion": 180,
+        "precio": 45000,
+        "imagen": "",
+        "estado": "Activo"
+    }
+]
