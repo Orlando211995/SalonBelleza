@@ -215,18 +215,18 @@ function pedidos_guardar_db(array $pedidos): bool
         $upsertPedido = $pdo->prepare(
             'INSERT INTO pedidos (id_pedido, id_cliente, numero_pedido, direccion, metodo_pago, tipo_entrega, total, costo_envio, observaciones, comprobante, estado, fecha)
              VALUES (:id_pedido, :id_cliente, :numero_pedido, :direccion, :metodo_pago, :tipo_entrega, :total, :costo_envio, :observaciones, :comprobante, :estado, :fecha)
-             ON DUPLICATE KEY UPDATE
-               id_cliente = VALUES(id_cliente),
-               numero_pedido = VALUES(numero_pedido),
-               direccion = VALUES(direccion),
-               metodo_pago = VALUES(metodo_pago),
-               tipo_entrega = VALUES(tipo_entrega),
-               total = VALUES(total),
-               costo_envio = VALUES(costo_envio),
-               observaciones = VALUES(observaciones),
-               comprobante = VALUES(comprobante),
-               estado = VALUES(estado),
-               fecha = VALUES(fecha)'
+                         ON CONFLICT (id_pedido) DO UPDATE SET
+                             id_cliente = EXCLUDED.id_cliente,
+                             numero_pedido = EXCLUDED.numero_pedido,
+                             direccion = EXCLUDED.direccion,
+                             metodo_pago = EXCLUDED.metodo_pago,
+                             tipo_entrega = EXCLUDED.tipo_entrega,
+                             total = EXCLUDED.total,
+                             costo_envio = EXCLUDED.costo_envio,
+                             observaciones = EXCLUDED.observaciones,
+                             comprobante = EXCLUDED.comprobante,
+                             estado = EXCLUDED.estado,
+                             fecha = EXCLUDED.fecha'
         );
 
         $delItems = $pdo->prepare('DELETE FROM detalle_pedido WHERE id_pedido = :id_pedido');

@@ -19,18 +19,25 @@ function categorias_estados_validos(): array
 
 function categorias_ensure_columns(PDO $pdo): void
 {
-    $stmtTipo = $pdo->query("SELECT COUNT(*) AS total FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'categorias' AND column_name = 'tipo'");
+    $esPostgreSQL = (bool)preg_match('/^pgsql:/i', (string)$pdo->getAttribute(PDO::ATTR_CONNECTION_STATUS));
+    $esPostgreSQL = $esPostgreSQL || strtolower((string)getenv('DB_DRIVER')) === 'pgsql' || getenv('DATABASE_URL') !== false;
+    $esquema = $esPostgreSQL ? "table_schema = 'public'" : 'table_schema = DATABASE()';
+    $stmtTipo = $pdo->query("SELECT COUNT(*) AS total FROM information_schema.columns WHERE $esquema AND table_name = 'categorias' AND column_name = 'tipo'");
     $tieneTipo = (int)(($stmtTipo ? $stmtTipo->fetch() : ['total' => 0])['total'] ?? 0) > 0;
 
     if (!$tieneTipo) {
-        $pdo->exec("ALTER TABLE categorias ADD COLUMN tipo ENUM('Producto','Servicio','Ambos') DEFAULT 'Producto' AFTER descripcion");
+        $pdo->exec($esPostgreSQL
+            ? "ALTER TABLE categorias ADD COLUMN tipo VARCHAR(20) DEFAULT 'Producto'"
+            : "ALTER TABLE categorias ADD COLUMN tipo ENUM('Producto','Servicio','Ambos') DEFAULT 'Producto' AFTER descripcion");
     }
 
-    $stmtEstado = $pdo->query("SELECT COUNT(*) AS total FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'categorias' AND column_name = 'estado'");
+    $stmtEstado = $pdo->query("SELECT COUNT(*) AS total FROM information_schema.columns WHERE $esquema AND table_name = 'categorias' AND column_name = 'estado'");
     $tieneEstado = (int)(($stmtEstado ? $stmtEstado->fetch() : ['total' => 0])['total'] ?? 0) > 0;
 
     if (!$tieneEstado) {
-        $pdo->exec("ALTER TABLE categorias ADD COLUMN estado ENUM('Activo','Inactivo') DEFAULT 'Activo' AFTER tipo");
+        $pdo->exec($esPostgreSQL
+            ? "ALTER TABLE categorias ADD COLUMN estado VARCHAR(20) DEFAULT 'Activo'"
+            : "ALTER TABLE categorias ADD COLUMN estado ENUM('Activo','Inactivo') DEFAULT 'Activo' AFTER tipo");
     }
 }
 

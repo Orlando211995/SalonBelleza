@@ -164,15 +164,15 @@ function pagos_guardar_db(array $pagos): bool
         $upsert = $pdo->prepare(
             'INSERT INTO pagos (id_pago, numero_pago, id_pedido, metodo, monto, comprobante, observaciones, fecha_pago, estado)
              VALUES (:id_pago, :numero_pago, :id_pedido, :metodo, :monto, :comprobante, :observaciones, :fecha_pago, :estado)
-             ON DUPLICATE KEY UPDATE
-               numero_pago = VALUES(numero_pago),
-               id_pedido = VALUES(id_pedido),
-               metodo = VALUES(metodo),
-               monto = VALUES(monto),
-               comprobante = VALUES(comprobante),
-               observaciones = VALUES(observaciones),
-               fecha_pago = VALUES(fecha_pago),
-               estado = VALUES(estado)'
+                         ON CONFLICT (id_pago) DO UPDATE SET
+                             numero_pago = EXCLUDED.numero_pago,
+                             id_pedido = EXCLUDED.id_pedido,
+                             metodo = EXCLUDED.metodo,
+                             monto = EXCLUDED.monto,
+                             comprobante = EXCLUDED.comprobante,
+                             observaciones = EXCLUDED.observaciones,
+                             fecha_pago = EXCLUDED.fecha_pago,
+                             estado = EXCLUDED.estado'
         );
 
         foreach ($pagos as $pago) {

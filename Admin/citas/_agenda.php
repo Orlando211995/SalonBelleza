@@ -224,15 +224,15 @@ function guardar_citas_db(array $citas): bool
         $upsert = $pdo->prepare(
             'INSERT INTO citas (id_cita, id_cliente, id_servicio, id_horario, empleado, fecha, observaciones, estado, pago)
              VALUES (:id_cita, :id_cliente, :id_servicio, :id_horario, :empleado, :fecha, :observaciones, :estado, :pago)
-             ON DUPLICATE KEY UPDATE
-               id_cliente = VALUES(id_cliente),
-               id_servicio = VALUES(id_servicio),
-               id_horario = VALUES(id_horario),
-               empleado = VALUES(empleado),
-               fecha = VALUES(fecha),
-               observaciones = VALUES(observaciones),
-               estado = VALUES(estado),
-               pago = VALUES(pago)'
+                         ON CONFLICT (id_cita) DO UPDATE SET
+                             id_cliente = EXCLUDED.id_cliente,
+                             id_servicio = EXCLUDED.id_servicio,
+                             id_horario = EXCLUDED.id_horario,
+                             empleado = EXCLUDED.empleado,
+                             fecha = EXCLUDED.fecha,
+                             observaciones = EXCLUDED.observaciones,
+                             estado = EXCLUDED.estado,
+                             pago = EXCLUDED.pago'
         );
 
         foreach ($citas as $cita) {

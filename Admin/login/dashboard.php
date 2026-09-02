@@ -10,7 +10,7 @@ $totalVentas = 0.0;
 if ($pdo) {
 	$totalProductos = (int)$pdo->query('SELECT COUNT(*) FROM productos')->fetchColumn();
 	$totalServicios = (int)$pdo->query('SELECT COUNT(*) FROM servicios')->fetchColumn();
-	$citasHoy = (int)$pdo->query('SELECT COUNT(*) FROM citas WHERE fecha = CURDATE()')->fetchColumn();
+	$citasHoy = (int)$pdo->query('SELECT COUNT(*) FROM citas WHERE fecha = CURRENT_DATE')->fetchColumn();
 	$totalVentas = (float)$pdo->query("SELECT COALESCE(SUM(monto), 0) FROM pagos WHERE estado = 'Aprobado'")->fetchColumn();
 }
 
