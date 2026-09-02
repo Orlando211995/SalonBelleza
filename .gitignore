@@ -2,6 +2,7 @@
 
 # Exportaciones de bases con datos privados
 Database/export_salon_belleza_supabase.sql
+Database/generar_export_supabase.php
 
 # Sistema
 Thumbs.db
