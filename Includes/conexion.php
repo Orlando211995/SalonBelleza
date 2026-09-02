@@ -18,7 +18,7 @@ function obtenerConexionSalon(): ?PDO
 
 			[$clave, $valor] = array_map('trim', explode('=', $linea, 2));
 			$valor = trim($valor, "\\\"'");
-			if ($clave !== '' && getenv($clave) === false) {
+			if ($clave !== '') {
 				putenv($clave . '=' . $valor);
 			}
 		}
