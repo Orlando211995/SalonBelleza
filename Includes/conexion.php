@@ -8,6 +8,22 @@ function obtenerConexionSalon(): ?PDO
 		return $pdoCache;
 	}
 
+	$archivoEntorno = __DIR__ . '/../.env';
+	if (is_file($archivoEntorno)) {
+		foreach (file($archivoEntorno, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $linea) {
+			$linea = trim($linea);
+			if ($linea === '' || str_starts_with($linea, '#') || !str_contains($linea, '=')) {
+				continue;
+			}
+
+			[$clave, $valor] = array_map('trim', explode('=', $linea, 2));
+			$valor = trim($valor, "\\\"'");
+			if ($clave !== '' && getenv($clave) === false) {
+				putenv($clave . '=' . $valor);
+			}
+		}
+	}
+
 	$databaseUrl = trim((string)(getenv('DATABASE_URL') ?: ''));
 	$driver = strtolower(getenv('DB_DRIVER') ?: 'mysql');
 	$host = getenv('DB_HOST') ?: '127.0.0.1';

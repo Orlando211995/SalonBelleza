@@ -1,4 +1,6 @@
 # Config local (credenciales sensibles, si aplica)
+.env
+.env.local
 
 # Exportaciones de bases con datos privados
 Database/export_salon_belleza_supabase.sql
