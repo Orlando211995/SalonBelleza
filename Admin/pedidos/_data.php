@@ -315,7 +315,7 @@ function pedidos_guardar_db(array $pedidos): bool
 function pedidos_cargar(): array
 {
     $pedidosDb = pedidos_cargar_db();
-    if ($pedidosDb) {
+    if ($pedidosDb || obtenerConexionSalon()) {
         file_put_contents(pedidos_data_file(), json_encode($pedidosDb, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         return $pedidosDb;
     }

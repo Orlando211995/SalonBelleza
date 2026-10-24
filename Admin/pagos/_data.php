@@ -228,7 +228,7 @@ function pagos_guardar_db(array $pagos): bool
 function pagos_cargar(): array
 {
     $pagosDb = pagos_cargar_db();
-    if ($pagosDb) {
+    if ($pagosDb || obtenerConexionSalon()) {
         file_put_contents(pagos_data_file(), json_encode($pagosDb, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         return $pagosDb;
     }
