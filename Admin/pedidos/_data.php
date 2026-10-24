@@ -116,6 +116,16 @@ function buscar_producto_id_por_nombre(PDO $pdo, string $nombre): ?int
     return null;
 }
 
+function producto_existe_por_id(PDO $pdo, int $id): bool
+{
+    if ($id <= 0) {
+        return false;
+    }
+    $stmt = $pdo->prepare('SELECT 1 FROM productos WHERE id_producto = :id LIMIT 1');
+    $stmt->execute(['id' => $id]);
+    return (bool)$stmt->fetchColumn();
+}
+
 function pedidos_cargar_db(): array
 {
     $pdo = obtenerConexionSalon();
@@ -132,7 +142,7 @@ function pedidos_cargar_db(): array
     $stmt = $pdo->query($sql);
     $pedidosDb = $stmt ? $stmt->fetchAll() : [];
 
-    $stmtItems = $pdo->query("SELECT dp.id_pedido, dp.cantidad, dp.precio_unitario,
+    $stmtItems = $pdo->query("SELECT dp.id_pedido, dp.id_producto, dp.cantidad, dp.precio_unitario,
                                      COALESCE(pr.nombre, 'Producto no registrado') AS producto
                               FROM detalle_pedido dp
                               LEFT JOIN productos pr ON pr.id_producto = dp.id_producto
@@ -147,6 +157,7 @@ function pedidos_cargar_db(): array
         }
 
         $itemsPorPedido[$idPedido][] = [
+            'id_producto' => (int)($fila['id_producto'] ?? 0),
             'producto' => (string)($fila['producto'] ?? 'Producto'),
             'cantidad' => (int)($fila['cantidad'] ?? 0),
             'precio' => (float)($fila['precio_unitario'] ?? 0),
@@ -276,7 +287,10 @@ function pedidos_guardar_db(array $pedidos): bool
                 $cantidad = max(1, (int)($item['cantidad'] ?? 1));
                 $precio = (float)($item['precio'] ?? 0);
                 $nombreProducto = trim((string)($item['producto'] ?? ''));
-                $idProducto = $nombreProducto !== '' ? buscar_producto_id_por_nombre($pdo, $nombreProducto) : null;
+                $idProducto = (int)($item['id_producto'] ?? 0);
+                if (!producto_existe_por_id($pdo, $idProducto)) {
+                    $idProducto = $nombreProducto !== '' ? buscar_producto_id_por_nombre($pdo, $nombreProducto) : null;
+                }
 
                 $insItem->execute([
                     'id_pedido' => $idPedido,

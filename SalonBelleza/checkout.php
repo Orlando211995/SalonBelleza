@@ -58,7 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$precio = 0;
 			}
 
+			$idProducto = preg_match('/^producto-(\d+)$/', (string)($item['id'] ?? ''), $coincidencia) ? (int)$coincidencia[1] : 0;
+
 			$itemsPedido[] = [
+				'id_producto' => $idProducto,
 				'producto' => $producto,
 				'cantidad' => $cantidad,
 				'precio' => $precio,
