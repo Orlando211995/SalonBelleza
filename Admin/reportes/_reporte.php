@@ -153,37 +153,65 @@ function reporte_construir_ventas(array $f): array
 	];
 }
 
-function reporte_ventas_por_producto(): array
+// Une el catalogo con las ventas: un registro por producto, incluso si nunca se vendio.
+function reporte_ranking_productos(array $productos): array
 {
-	$conteo = [];
+	$ranking = [];
+	foreach ($productos as $producto) {
+		$nombre = trim((string)($producto['nombre'] ?? ''));
+		$ranking[$nombre] = [
+			'codigo' => trim((string)($producto['codigo'] ?? '')) ?: '-',
+			'nombre' => $nombre,
+			'categoria' => (string)($producto['categoria'] ?? ''),
+			'vendidas' => 0,
+			'ingresos' => 0.0,
+			'stock' => (int)($producto['stock'] ?? 0),
+		];
+	}
+
 	foreach (pedidos_cargar() as $pedido) {
 		foreach (($pedido['items'] ?? []) as $item) {
 			$nombre = trim((string)($item['producto'] ?? ''));
 			if ($nombre === '') {
 				continue;
 			}
-			$conteo[$nombre] = ($conteo[$nombre] ?? 0) + (int)($item['cantidad'] ?? 0);
+			if (!isset($ranking[$nombre])) {
+				$ranking[$nombre] = ['codigo' => '-', 'nombre' => $nombre, 'categoria' => '', 'vendidas' => 0, 'ingresos' => 0.0, 'stock' => 0];
+			}
+			$cantidad = (int)($item['cantidad'] ?? 0);
+			$ranking[$nombre]['vendidas'] += $cantidad;
+			$ranking[$nombre]['ingresos'] += $cantidad * (float)($item['precio'] ?? 0);
 		}
 	}
-	return $conteo;
+
+	return array_values($ranking);
 }
 
 function reporte_construir_productos(array $f): array
 {
 	$productos = productos_cargar();
-	$conteo = reporte_ventas_por_producto();
+	$ranking = reporte_ranking_productos($productos);
 
-	arsort($conteo);
-	$masVendidos = array_slice($conteo, 0, 5, true);
-	$menosVendidos = $conteo;
-	asort($menosVendidos);
-	$menosVendidos = array_slice($menosVendidos, 0, 5, true);
+	$masVendidos = array_filter($ranking, static fn($p) => $p['vendidas'] > 0);
+	usort($masVendidos, static fn($a, $b) => [$b['vendidas'], $a['nombre']] <=> [$a['vendidas'], $b['nombre']]);
+	$masVendidos = array_slice($masVendidos, 0, 5);
+
+	$menosVendidos = $ranking;
+	usort($menosVendidos, static fn($a, $b) => [$a['vendidas'], $a['nombre']] <=> [$b['vendidas'], $b['nombre']]);
+	$menosVendidos = array_slice($menosVendidos, 0, 5);
+
+	$sinVentas = count(array_filter($ranking, static fn($p) => $p['vendidas'] === 0));
 
 	$sinExistencias = [];
 	$inventarioBajo = [];
 	foreach ($productos as $producto) {
 		$stock = (int)($producto['stock'] ?? 0);
-		$fila = [(string)($producto['nombre'] ?? ''), (string)($producto['categoria'] ?? ''), $stock];
+		$fila = [
+			trim((string)($producto['codigo'] ?? '')) ?: '-',
+			(string)($producto['nombre'] ?? ''),
+			(string)($producto['categoria'] ?? ''),
+			$stock,
+		];
 		if ($stock <= 0) {
 			$sinExistencias[] = $fila;
 		} elseif ($stock <= 10) {
@@ -191,27 +219,24 @@ function reporte_construir_productos(array $f): array
 		}
 	}
 
-	$aFilas = static function (array $mapa): array {
-		$filas = [];
-		foreach ($mapa as $nombre => $cantidad) {
-			$filas[] = [(string)$nombre, (int)$cantidad];
-		}
-		return $filas;
-	};
-	$colStock = [['Producto', 'texto'], ['Categoria', 'texto'], ['Stock', 'entero']];
-	$colVentas = [['Producto', 'texto'], ['Cantidad vendida', 'entero']];
+	$aFilas = static fn(array $lista): array => array_map(
+		static fn($p) => [$p['codigo'], $p['nombre'], $p['categoria'], $p['vendidas'], $p['ingresos'], $p['stock']],
+		$lista
+	);
+	$colStock = [['Codigo', 'texto'], ['Producto', 'texto'], ['Categoria', 'texto'], ['Stock', 'entero']];
+	$colVentas = [['Codigo', 'texto'], ['Producto', 'texto'], ['Categoria', 'texto'], ['Unidades vendidas', 'entero'], ['Ingresos', 'moneda'], ['Stock actual', 'entero']];
 
 	return [
 		'filtros' => 'Inventario y rotacion actual',
 		'resumen' => [
 			['Productos registrados', count($productos), 'entero'],
-			['Productos con baja rotacion', count($menosVendidos), 'entero'],
+			['Productos sin ventas', $sinVentas, 'entero'],
 			['Productos sin stock', count($sinExistencias), 'entero'],
 			['Inventario bajo', count($inventarioBajo), 'entero'],
 		],
 		'secciones' => [
 			reporte_seccion('Productos mas vendidos', $colVentas, $aFilas($masVendidos), null, 'Sin ventas registradas.'),
-			reporte_seccion('Productos menos vendidos', $colVentas, $aFilas($menosVendidos), null, 'Sin ventas registradas.'),
+			reporte_seccion('Productos menos vendidos', $colVentas, $aFilas($menosVendidos), null, 'Sin productos registrados.'),
 			reporte_seccion('Productos sin existencias', $colStock, $sinExistencias, null, 'No hay productos agotados.'),
 			reporte_seccion('Productos con inventario bajo', $colStock, $inventarioBajo, null, 'No hay productos con inventario bajo.'),
 		],
@@ -452,7 +477,7 @@ function reporte_construir_inventario(array $f): array
 		$valor = $stock * $precio;
 		$valorTotal += $valor;
 		$unidades += $stock;
-		$filas[] = [(string)($producto['nombre'] ?? ''), (string)($producto['categoria'] ?? ''), $precio, $stock, $valor];
+		$filas[] = [trim((string)($producto['codigo'] ?? '')) ?: '-', (string)($producto['nombre'] ?? ''), (string)($producto['categoria'] ?? ''), $precio, $stock, $valor];
 	}
 
 	return [
@@ -466,9 +491,9 @@ function reporte_construir_inventario(array $f): array
 		'secciones' => [
 			reporte_seccion(
 				'Detalle de inventario',
-				[['Producto', 'texto'], ['Categoria', 'texto'], ['Precio', 'moneda'], ['Stock', 'entero'], ['Valor', 'moneda']],
+				[['Codigo', 'texto'], ['Producto', 'texto'], ['Categoria', 'texto'], ['Precio', 'moneda'], ['Stock', 'entero'], ['Valor', 'moneda']],
 				$filas,
-				['Total', '', '', $unidades, $valorTotal],
+				['Total', '', '', '', $unidades, $valorTotal],
 				'No hay productos registrados.'
 			),
 		],

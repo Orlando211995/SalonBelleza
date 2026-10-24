@@ -1,48 +1,9 @@
 <?php
-require_once __DIR__ . '/../pedidos/_data.php';
-require_once __DIR__ . '/../productos/_data.php';
+require_once __DIR__ . '/_reporte.php';
 
-$pedidos = pedidos_cargar();
-$productos = productos_cargar();
-
-$conteoVentas = [];
-foreach ($pedidos as $pedido) {
-    $items = $pedido['items'] ?? [];
-    foreach ($items as $item) {
-        $nombre = trim((string)($item['producto'] ?? ''));
-        $cantidad = (int)($item['cantidad'] ?? 0);
-        if ($nombre === '') {
-            continue;
-        }
-
-        if (!isset($conteoVentas[$nombre])) {
-            $conteoVentas[$nombre] = 0;
-        }
-        $conteoVentas[$nombre] += $cantidad;
-    }
-}
-
-arsort($conteoVentas);
-$masVendidos = array_slice($conteoVentas, 0, 5, true);
-
-$menosVendidos = $conteoVentas;
-asort($menosVendidos);
-$menosVendidos = array_slice($menosVendidos, 0, 5, true);
-
-$sinExistencias = [];
-$inventarioBajo = [];
-
-foreach ($productos as $producto) {
-    $stock = (int)($producto['stock'] ?? 0);
-    if ($stock <= 0) {
-        $sinExistencias[] = $producto;
-    }
-    if ($stock > 0 && $stock <= 10) {
-        $inventarioBajo[] = $producto;
-    }
-}
-
+$reporte = reporte_construir('productos');
 $queryBase = ['reporte' => 'productos'];
+$e = static fn($texto) => htmlspecialchars((string)$texto, ENT_QUOTES, 'UTF-8');
 
 include(__DIR__ . '/../Includes/header.php');
 ?>
@@ -59,90 +20,43 @@ include(__DIR__ . '/../Includes/header.php');
                 <p>Productos mas vendidos, menos vendidos y control de inventario.</p>
 
                 <div class="admin-actions-row" style="margin:12px 0 14px; flex-wrap: wrap;">
-                    <a class="admin-btn" href="exportar_pdf.php?<?php echo htmlspecialchars(http_build_query($queryBase), ENT_QUOTES, 'UTF-8'); ?>">📄 Exportar a PDF</a>
-                    <a class="admin-btn" href="exportar_excel.php?<?php echo htmlspecialchars(http_build_query($queryBase), ENT_QUOTES, 'UTF-8'); ?>">📊 Exportar a Excel</a>
-                    <a class="admin-btn" href="imprimir.php?<?php echo htmlspecialchars(http_build_query($queryBase), ENT_QUOTES, 'UTF-8'); ?>">🖨 Imprimir</a>
+                    <a class="admin-btn" href="exportar_pdf.php?<?php echo $e(http_build_query($queryBase)); ?>">📄 Exportar a PDF</a>
+                    <a class="admin-btn" href="exportar_excel.php?<?php echo $e(http_build_query($queryBase)); ?>">📊 Exportar a Excel</a>
+                    <a class="admin-btn" href="imprimir.php?<?php echo $e(http_build_query($queryBase)); ?>">🖨 Imprimir</a>
                 </div>
 
                 <div class="admin-cards" style="margin-bottom:14px;">
-                    <article class="admin-card"><h3>Productos con baja rotacion</h3><p><?php echo count($menosVendidos); ?></p></article>
-                    <article class="admin-card"><h3>Productos sin stock</h3><p><?php echo count($sinExistencias); ?></p></article>
-                    <article class="admin-card"><h3>Inventario bajo</h3><p><?php echo count($inventarioBajo); ?></p></article>
+                    <?php foreach ($reporte['resumen'] as [$etiqueta, $valor, $tipo]): ?>
+                        <article class="admin-card"><h3><?php echo $e($etiqueta); ?></h3><p><?php echo $e(reporte_formatear($valor, $tipo)); ?></p></article>
+                    <?php endforeach; ?>
                 </div>
 
-                <h3 style="margin:8px 0;">Productos mas vendidos</h3>
-                <div class="admin-table-wrap" style="margin-bottom:14px;">
-                    <table class="admin-table" style="min-width:640px;">
-                        <thead><tr><th>Producto</th><th>Cantidad vendida</th></tr></thead>
-                        <tbody>
-                            <?php if (!$masVendidos): ?>
-                                <tr><td colspan="2">Sin ventas registradas.</td></tr>
-                            <?php endif; ?>
-                            <?php foreach ($masVendidos as $producto => $cantidad): ?>
+                <?php foreach ($reporte['secciones'] as $seccion): ?>
+                    <h3 style="margin:8px 0;"><?php echo $e($seccion['titulo']); ?></h3>
+                    <div class="admin-table-wrap" style="margin-bottom:14px;">
+                        <table class="admin-table" style="min-width:760px;">
+                            <thead>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($producto, ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><?php echo (int)$cantidad; ?></td>
+                                    <?php foreach ($seccion['columnas'] as [$nombre]): ?>
+                                        <th><?php echo $e($nombre); ?></th>
+                                    <?php endforeach; ?>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <h3 style="margin:8px 0;">Productos menos vendidos</h3>
-                <div class="admin-table-wrap" style="margin-bottom:14px;">
-                    <table class="admin-table" style="min-width:640px;">
-                        <thead><tr><th>Producto</th><th>Cantidad vendida</th></tr></thead>
-                        <tbody>
-                            <?php if (!$menosVendidos): ?>
-                                <tr><td colspan="2">Sin ventas registradas.</td></tr>
-                            <?php endif; ?>
-                            <?php foreach ($menosVendidos as $producto => $cantidad): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($producto, ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><?php echo (int)$cantidad; ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <h3 style="margin:8px 0;">Productos sin existencias</h3>
-                <div class="admin-table-wrap" style="margin-bottom:14px;">
-                    <table class="admin-table" style="min-width:640px;">
-                        <thead><tr><th>Producto</th><th>Categoria</th><th>Stock</th></tr></thead>
-                        <tbody>
-                            <?php if (!$sinExistencias): ?>
-                                <tr><td colspan="3">No hay productos agotados.</td></tr>
-                            <?php endif; ?>
-                            <?php foreach ($sinExistencias as $producto): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($producto['nombre'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><?php echo htmlspecialchars($producto['categoria'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><?php echo (int)($producto['stock'] ?? 0); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <h3 style="margin:8px 0;">Productos con inventario bajo</h3>
-                <div class="admin-table-wrap">
-                    <table class="admin-table" style="min-width:640px;">
-                        <thead><tr><th>Producto</th><th>Categoria</th><th>Stock</th></tr></thead>
-                        <tbody>
-                            <?php if (!$inventarioBajo): ?>
-                                <tr><td colspan="3">No hay productos con inventario bajo.</td></tr>
-                            <?php endif; ?>
-                            <?php foreach ($inventarioBajo as $producto): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($producto['nombre'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><?php echo htmlspecialchars($producto['categoria'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><?php echo (int)($producto['stock'] ?? 0); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                <?php if (!$seccion['filas']): ?>
+                                    <tr><td colspan="<?php echo count($seccion['columnas']); ?>"><?php echo $e($seccion['vacio']); ?></td></tr>
+                                <?php endif; ?>
+                                <?php foreach ($seccion['filas'] as $fila): ?>
+                                    <tr>
+                                        <?php foreach ($seccion['columnas'] as $i => [, $tipo]): ?>
+                                            <td><?php echo $e(reporte_formatear($fila[$i] ?? '', $tipo)); ?></td>
+                                        <?php endforeach; ?>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endforeach; ?>
             </section>
         </section>
     </main>

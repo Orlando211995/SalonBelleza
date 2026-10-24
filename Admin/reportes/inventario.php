@@ -55,6 +55,7 @@ include(__DIR__ . '/../Includes/header.php');
                     <table class="admin-table">
                         <thead>
                             <tr>
+                                <th>Codigo</th>
                                 <th>Producto</th>
                                 <th>Categoria</th>
                                 <th>Precio</th>
@@ -64,7 +65,7 @@ include(__DIR__ . '/../Includes/header.php');
                         </thead>
                         <tbody>
                             <?php if (!$productos): ?>
-                                <tr><td colspan="5">No hay productos registrados.</td></tr>
+                                <tr><td colspan="6">No hay productos registrados.</td></tr>
                             <?php endif; ?>
                             <?php foreach ($productos as $producto): ?>
                                 <?php
@@ -72,6 +73,7 @@ include(__DIR__ . '/../Includes/header.php');
                                 $stock = (int)($producto['stock'] ?? 0);
                                 ?>
                                 <tr>
+                                    <td><?php echo htmlspecialchars(trim((string)($producto['codigo'] ?? '')) ?: '-', ENT_QUOTES, 'UTF-8'); ?></td>
                                     <td><?php echo htmlspecialchars($producto['nombre'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
                                     <td><?php echo htmlspecialchars($producto['categoria'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
                                     <td><?php echo '₡' . number_format($precio, 0, ',', '.'); ?></td>

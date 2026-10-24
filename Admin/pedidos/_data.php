@@ -133,7 +133,7 @@ function pedidos_cargar_db(): array
     $pedidosDb = $stmt ? $stmt->fetchAll() : [];
 
     $stmtItems = $pdo->query("SELECT dp.id_pedido, dp.cantidad, dp.precio_unitario,
-                                     COALESCE(pr.nombre, CONCAT('Producto #', dp.id_producto)) AS producto
+                                     COALESCE(pr.nombre, 'Producto no registrado') AS producto
                               FROM detalle_pedido dp
                               LEFT JOIN productos pr ON pr.id_producto = dp.id_producto
                               ORDER BY dp.id_detalle ASC");

@@ -53,7 +53,7 @@ function productos_cargar_desde_db(): array
         return [];
     }
 
-    $sql = "SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.stock, p.destacado, p.estado, p.imagen, c.nombre AS categoria
+    $sql = "SELECT p.id_producto, p.codigo, p.nombre, p.descripcion, p.precio, p.stock, p.destacado, p.estado, p.imagen, c.nombre AS categoria
             FROM productos p
             LEFT JOIN categorias c ON c.id_categoria = p.id_categoria
             ORDER BY p.id_producto ASC";
@@ -64,6 +64,7 @@ function productos_cargar_desde_db(): array
     foreach ($filas as $fila) {
         $productos[] = [
             'id' => (int)($fila['id_producto'] ?? 0),
+            'codigo' => (string)($fila['codigo'] ?? ''),
             'nombre' => (string)($fila['nombre'] ?? ''),
             'descripcion' => (string)($fila['descripcion'] ?? ''),
             'categoria' => (string)($fila['categoria'] ?? ''),
