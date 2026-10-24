@@ -109,6 +109,7 @@ include(__DIR__ . '/../Includes/header.php');
 										<a href="editar.php?id=<?php echo (int)($pago['id'] ?? 0); ?>" class="admin-action edit" title="Editar">✏️</a>
 										<a href="aprobar.php?id=<?php echo (int)($pago['id'] ?? 0); ?>" class="admin-action" title="Aprobar">✅</a>
 										<a href="rechazar.php?id=<?php echo (int)($pago['id'] ?? 0); ?>" class="admin-action delete" title="Rechazar">❌</a>
+										<a href="eliminar.php?id=<?php echo (int)($pago['id'] ?? 0); ?>" class="admin-action delete" title="Eliminar" onclick="return confirm('¿Seguro que deseas eliminar este pago?');">🗑️</a>
 										<a href="comprobante.php?id=<?php echo (int)($pago['id'] ?? 0); ?>" class="admin-action" title="Comprobante">📄</a>
 										<a href="imprimir.php?id=<?php echo (int)($pago['id'] ?? 0); ?>" class="admin-action" title="Imprimir">🖨️</a>
 									</td>

@@ -94,6 +94,7 @@ include(__DIR__ . '/../Includes/header.php');
 									<td class="admin-actions">
 										<a href="ver.php?id=<?php echo (int)($pedido['id'] ?? 0); ?>" class="admin-action" title="Ver">👁️</a>
 										<a href="editar.php?id=<?php echo (int)($pedido['id'] ?? 0); ?>" class="admin-action edit" title="Editar">✏️</a>
+										<a href="eliminar.php?id=<?php echo (int)($pedido['id'] ?? 0); ?>" class="admin-action delete" title="Eliminar" onclick="return confirm('¿Seguro que deseas eliminar este pedido? También se eliminarán sus pagos.');">🗑️</a>
 										<a href="factura.php?id=<?php echo (int)($pedido['id'] ?? 0); ?>" class="admin-action" title="Factura">🧾</a>
 										<a href="imprimir.php?id=<?php echo (int)($pedido['id'] ?? 0); ?>" class="admin-action" title="Imprimir">🖨️</a>
 									</td>
