@@ -2,9 +2,11 @@
 
 require_once __DIR__ . '/../../Includes/conexion.php';
 
-function servicios_data_file(): string
-{
-    return __DIR__ . '/servicios_data.json';
+if (!function_exists('servicios_data_file')) {
+	function servicios_data_file(): string
+	{
+		return __DIR__ . '/servicios_data.json';
+	}
 }
 
 function servicios_categorias_validas(): array

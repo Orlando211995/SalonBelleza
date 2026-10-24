@@ -49,8 +49,8 @@ foreach ($pedidos as $pedido) {
 	}
 
 	if ($inicioRango !== '' && $finRango !== '') {
-		$inicioObj = DateTimeImmutable::createFromFormat('Y-m-d', $inicioRango);
-		$finObj = DateTimeImmutable::createFromFormat('Y-m-d', $finRango);
+		$inicioObj = DateTimeImmutable::createFromFormat('!Y-m-d', $inicioRango);
+		$finObj = DateTimeImmutable::createFromFormat('!Y-m-d', $finRango);
 		if ($inicioObj && $finObj && $fecha >= $inicioObj && $fecha <= $finObj->setTime(23, 59, 59)) {
 			$ventasRango += $total;
 			$ventasFiltradas[] = $pedido;

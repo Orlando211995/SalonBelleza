@@ -7,9 +7,11 @@ function citas_data_file(): string
     return __DIR__ . '/citas_data.json';
 }
 
-function servicios_data_file(): string
-{
-    return __DIR__ . '/../servicios/servicios_data.json';
+if (!function_exists('servicios_data_file')) {
+    function servicios_data_file(): string
+    {
+        return __DIR__ . '/../servicios/servicios_data.json';
+    }
 }
 
 function estados_cita_validos(): array
