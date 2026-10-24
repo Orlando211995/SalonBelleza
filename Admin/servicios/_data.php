@@ -22,6 +22,23 @@ function servicio_estado_db_desde_ui(string $estadoUi): string
     return $estadoUi === 'Inactivo' ? 'No Disponible' : 'Disponible';
 }
 
+function servicio_imagen_por_defecto(string $nombre, string $categoria): string
+{
+    $texto = strtolower($nombre . ' ' . $categoria);
+    $mapa = [
+        'barba' => 'barba.jpg',
+        'manicure' => 'manicure.jpg',
+        'pedicure' => 'pedicure.jpg',
+        'caballero' => 'corte.jpg',
+    ];
+    foreach ($mapa as $clave => $archivo) {
+        if (strpos($texto, $clave) !== false) {
+            return '/Assets/img/servicios/' . $archivo;
+        }
+    }
+    return '/Assets/img/servicios/cortes.jpg';
+}
+
 function servicios_cargar_desde_db(): array
 {
     $pdo = obtenerConexionSalon();
@@ -41,7 +58,9 @@ function servicios_cargar_desde_db(): array
             'descripcion' => (string)($fila['descripcion'] ?? ''),
             'duracion' => (int)($fila['duracion'] ?? 0),
             'precio' => (float)($fila['precio'] ?? 0),
-            'imagen' => (string)($fila['imagen'] ?? ''),
+            'imagen' => trim((string)($fila['imagen'] ?? '')) !== ''
+                ? (string)$fila['imagen']
+                : servicio_imagen_por_defecto((string)($fila['nombre'] ?? ''), (string)($fila['categoria'] ?? '')),
             'estado' => servicio_estado_ui_desde_db((string)($fila['estado'] ?? 'Disponible')),
         ];
     }
