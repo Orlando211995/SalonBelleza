@@ -127,9 +127,6 @@ include(__DIR__ . '/../Includes/header.php');
 			<a href="/Admin/login/forgot_password.php" style="color:#ffd34f;">Olvide mi contrasena</a>
 		</p>
 
-		<p style="margin-top:14px;font-size:13px;color:#bcc5da;">
-			Para cambiar hash de contrasena usa: <a href="/Admin/login/generar_hash.php" style="color:#ffd34f;">/Admin/login/generar_hash.php</a>
-		</p>
 	</section>
 </main>
 
