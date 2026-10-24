@@ -927,6 +927,44 @@ a[href="carrito.php"]{
 
 }
 
+@media screen and (max-width: 768px){
+
+    .productos-wrapper{
+
+        flex-direction: column;
+        gap: 20px;
+
+    }
+
+    .productos-sidebar{
+
+        width: 100%;
+
+    }
+
+    .categorias-list{
+
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 20px;
+
+    }
+
+    .categorias-list li{
+
+        margin-bottom: 0;
+
+    }
+
+    .productos-grid{
+
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 16px;
+
+    }
+
+}
+
 @media screen and (max-width: 950px){
 
     .carrito-wrapper{

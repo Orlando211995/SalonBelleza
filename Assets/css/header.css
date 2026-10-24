@@ -12,6 +12,18 @@
 
 }
 
+@media(max-width:576px){
+
+.navbar-brand{
+
+    font-size:20px;
+    white-space:normal;
+    max-width:calc(100% - 70px);
+
+}
+
+}
+
 .nav-link{
 
     color:white !important;
