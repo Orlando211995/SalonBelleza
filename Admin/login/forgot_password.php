@@ -165,10 +165,6 @@ include(__DIR__ . '/../Includes/header.php');
             </div>
         <?php endif; ?>
 
-		<div class="admin-alert" style="margin-top:14px;background:#142235;border:1px solid #2b4a75;color:#c7dcff;">
-			<p>SMTP Gmail opcional (variables de entorno): SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM, SMTP_FROM_NAME.</p>
-		</div>
-
         <p style="margin-top:14px;text-align:center;"><a href="/Admin/login/login.php" style="color:#ffd34f;">Volver al login</a></p>
     </section>
 </main>
