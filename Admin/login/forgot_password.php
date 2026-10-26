@@ -25,6 +25,60 @@ function construirResetUrl(string $token): string
     return $protocolo . '://' . $host . '/Admin/login/reset_password.php?token=' . urlencode($token);
 }
 
+function enviarCorreoResetEmailJs(string $correo, string $nombre, string $urlReset): bool
+{
+    $serviceId = trim((string)(getenv('EMAILJS_SERVICE_ID') ?: ''));
+    $templateId = trim((string)(getenv('EMAILJS_TEMPLATE_RESET') ?: ''));
+    $publicKey = trim((string)(getenv('EMAILJS_PUBLIC_KEY') ?: ''));
+    $privateKey = trim((string)(getenv('EMAILJS_PRIVATE_KEY') ?: ''));
+
+    if ($serviceId === '' || $templateId === '' || $publicKey === '' || $privateKey === '') {
+        return false;
+    }
+
+    $payload = json_encode([
+        'service_id' => $serviceId,
+        'template_id' => $templateId,
+        'user_id' => $publicKey,
+        'accessToken' => $privateKey,
+        'template_params' => [
+            'to_email' => $correo,
+            'to_name' => $nombre,
+            'reset_link' => $urlReset,
+        ],
+    ], JSON_UNESCAPED_UNICODE);
+
+    try {
+        if (function_exists('curl_init')) {
+            $ch = curl_init('https://api.emailjs.com/api/v1.0/email/send');
+            curl_setopt_array($ch, [
+                CURLOPT_POST => true,
+                CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 15,
+            ]);
+            curl_exec($ch);
+            $codigo = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            return $codigo === 200;
+        }
+
+        $contexto = stream_context_create(['http' => [
+            'method' => 'POST',
+            'header' => "Content-Type: application/json\r\n",
+            'content' => $payload,
+            'timeout' => 15,
+            'ignore_errors' => true,
+        ]]);
+        @file_get_contents('https://api.emailjs.com/api/v1.0/email/send', false, $contexto);
+        $cabecera = $http_response_header[0] ?? '';
+        return str_contains($cabecera, ' 200');
+    } catch (Throwable $e) {
+        return false;
+    }
+}
+
 function enviarCorreoResetSmtp(string $correo, string $nombre, string $urlReset): bool
 {
     if (!class_exists('PHPMailer\\PHPMailer\\PHPMailer')) {
@@ -114,8 +168,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $urlReset = construirResetUrl($tokenPlano);
                 $nombre = (string)($admin['nombre'] ?? 'Administrador');
 
-                $enviado = false;
-                if ($phpMailerDisponible) {
+                $enviado = enviarCorreoResetEmailJs($correo, $nombre, $urlReset);
+                if (!$enviado && $phpMailerDisponible) {
                     $enviado = enviarCorreoResetSmtp($correo, $nombre, $urlReset);
                 }
 
