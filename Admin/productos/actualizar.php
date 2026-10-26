@@ -36,7 +36,7 @@ if ($descripcion === '') {
 	$errores[] = 'La descripción del producto es obligatoria.';
 }
 
-$categoriasValidas = ['Shampoo', 'Acondicionadores', 'Mascarillas', 'Tintes'];
+$categoriasValidas = productos_categorias_validas((string)($productoActual['categoria'] ?? ''));
 if (!in_array($categoria, $categoriasValidas, true)) {
 	$errores[] = 'Debes seleccionar una categoria valida.';
 }

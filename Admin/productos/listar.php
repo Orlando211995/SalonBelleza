@@ -48,10 +48,9 @@ include(__DIR__ . '/../Includes/header.php');
 
 					<select id="productoCategoria" class="admin-select" aria-label="Filtrar por categoria">
 						<option value="">📂 Filtrar por categoria</option>
-						<option value="Shampoo">Shampoo</option>
-						<option value="Acondicionadores">Acondicionadores</option>
-						<option value="Mascarillas">Mascarillas</option>
-						<option value="Tintes">Tintes</option>
+						<?php foreach (productos_categorias_validas() as $nombreCategoria): ?>
+							<option value="<?php echo htmlspecialchars($nombreCategoria, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($nombreCategoria, ENT_QUOTES, 'UTF-8'); ?></option>
+						<?php endforeach; ?>
 					</select>
 				</div>
 

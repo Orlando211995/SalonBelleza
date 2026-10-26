@@ -7,9 +7,41 @@ function productos_data_file(): string
     return __DIR__ . '/productos_data.json';
 }
 
-function productos_categorias_validas(): array
+function productos_categorias_validas(string $incluir = ''): array
 {
-    return ['Shampoo', 'Acondicionadores', 'Mascarillas', 'Tintes'];
+    $base = ['Shampoo', 'Acondicionadores', 'Mascarillas', 'Tintes'];
+    $categorias = [];
+
+    try {
+        $pdo = obtenerConexionSalon();
+        if ($pdo) {
+            $stmt = $pdo->query(
+                "SELECT nombre FROM categorias
+                 WHERE COALESCE(tipo, 'Producto') IN ('Producto', 'Ambos')
+                   AND COALESCE(estado, 'Activo') = 'Activo'
+                 ORDER BY id_categoria ASC"
+            );
+            foreach (($stmt ? $stmt->fetchAll() : []) as $fila) {
+                $nombre = trim((string)($fila['nombre'] ?? ''));
+                if ($nombre !== '') {
+                    $categorias[] = $nombre;
+                }
+            }
+        }
+    } catch (Throwable $e) {
+        $categorias = [];
+    }
+
+    if (!$categorias) {
+        $categorias = $base;
+    }
+
+    $incluir = trim($incluir);
+    if ($incluir !== '' && !in_array($incluir, $categorias, true)) {
+        $categorias[] = $incluir;
+    }
+
+    return array_values(array_unique($categorias));
 }
 
 function producto_estado_ui_desde_db(string $estadoDb): string

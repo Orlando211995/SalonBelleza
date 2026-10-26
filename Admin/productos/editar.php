@@ -68,10 +68,9 @@ include(__DIR__ . '/../Includes/header.php');
 							<?php $cat = $old['categoria'] ?? ($producto['categoria'] ?? ''); ?>
 							<select id="categoria" name="categoria" required>
 								<option value="">Seleccionar categoria</option>
-								<option value="Shampoo" <?php echo $cat === 'Shampoo' ? 'selected' : ''; ?>>Shampoo</option>
-								<option value="Acondicionadores" <?php echo $cat === 'Acondicionadores' ? 'selected' : ''; ?>>Acondicionadores</option>
-								<option value="Mascarillas" <?php echo $cat === 'Mascarillas' ? 'selected' : ''; ?>>Mascarillas</option>
-								<option value="Tintes" <?php echo $cat === 'Tintes' ? 'selected' : ''; ?>>Tintes</option>
+								<?php foreach (productos_categorias_validas((string)$cat) as $nombreCategoria): ?>
+									<option value="<?php echo htmlspecialchars($nombreCategoria, ENT_QUOTES, 'UTF-8'); ?>" <?php echo $cat === $nombreCategoria ? 'selected' : ''; ?>><?php echo htmlspecialchars($nombreCategoria, ENT_QUOTES, 'UTF-8'); ?></option>
+								<?php endforeach; ?>
 							</select>
 						</div>
 

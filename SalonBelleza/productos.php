@@ -42,14 +42,15 @@ if (!$productosCatalogo) {
     ];
 }
 
-$categorias = [
-    'shampoos' => 'Shampoo',
-    'acondicionadores' => 'Acondicionadores',
-    'mascarillas' => 'Mascarillas',
-    'tintes' => 'Tintes',
-];
-
-$categoriasOrdenadas = ['shampoos', 'acondicionadores', 'mascarillas', 'tintes'];
+$categoriasOrdenadas = [];
+$categorias = [];
+foreach (productos_categorias_validas() as $nombreCategoria) {
+    $clave = 'cat-' . substr(md5(mb_strtolower($nombreCategoria)), 0, 8);
+    $categorias[$clave] = $nombreCategoria;
+    $categoriasOrdenadas[] = $clave;
+}
+$claveDeCategoria = array_flip($categorias);
+$primeraCategoria = $categoriasOrdenadas[0] ?? '';
 
 ?>
 
@@ -94,16 +95,11 @@ $categoriasOrdenadas = ['shampoos', 'acondicionadores', 'mascarillas', 'tintes']
         <div class="productos-grid">
             <?php foreach ($productosCatalogo as $producto): ?>
                 <?php
-                    $categoriaActual = (string)($producto['categoria'] ?? 'Shampoo');
-                    $categoriaKey = match ($categoriaActual) {
-                        'Acondicionadores' => 'acondicionadores',
-                        'Mascarillas' => 'mascarillas',
-                        'Tintes' => 'tintes',
-                        default => 'shampoos',
-                    };
+                    $categoriaActual = (string)($producto['categoria'] ?? '');
+                    $categoriaKey = $claveDeCategoria[$categoriaActual] ?? '';
                     $slugProducto = 'producto-' . (int)($producto['id'] ?? 0);
                 ?>
-                <div class="card-producto" data-categoria="<?php echo htmlspecialchars($categoriaKey); ?>" style="<?php echo $categoriaKey === 'shampoos' ? '' : 'display: none;'; ?>">
+                <div class="card-producto" data-categoria="<?php echo htmlspecialchars($categoriaKey); ?>" style="<?php echo $categoriaKey === $primeraCategoria ? '' : 'display: none;'; ?>">
                     <a href="producto.php?producto=<?php echo urlencode($slugProducto); ?>" class="card-producto-link">
                         <div class="card-producto-img-wrapper">
                             <img src="<?php echo htmlspecialchars((string)($producto['imagen'] ?? '/Assets/img/productos/default.jpg')); ?>" alt="<?php echo htmlspecialchars((string)($producto['nombre'] ?? 'Producto')); ?>">
