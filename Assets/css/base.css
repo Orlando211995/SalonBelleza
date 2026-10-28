@@ -97,6 +97,14 @@ section{
     text-align:left;
 }
 
+.contacto-home .contacto-info{
+
+    max-width:560px;
+    margin:0 auto;
+    text-align:center;
+
+}
+
 .contacto-info h3,
 .contacto-form-card h3{
 

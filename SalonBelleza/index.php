@@ -267,7 +267,7 @@ $productosDestacados = array_slice($productosDestacados, 0, 4);
 
         <p>WhatsApp: 8910-2422</p>
 
-        <p>Email: info@salon.com</p>
+        <p>Email: alfredosaloncr@gmail.com</p>
 
     </div>
 
