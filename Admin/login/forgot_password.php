@@ -33,6 +33,7 @@ function enviarCorreoResetEmailJs(string $correo, string $nombre, string $urlRes
     $privateKey = trim((string)(getenv('EMAILJS_PRIVATE_KEY') ?: ''));
 
     if ($serviceId === '' || $templateId === '' || $publicKey === '' || $privateKey === '') {
+        error_log('EmailJS reset: faltan variables EMAILJS_* en .env');
         return false;
     }
 
@@ -58,9 +59,13 @@ function enviarCorreoResetEmailJs(string $correo, string $nombre, string $urlRes
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_TIMEOUT => 15,
             ]);
-            curl_exec($ch);
+            $respuesta = curl_exec($ch);
             $codigo = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $errorCurl = curl_error($ch);
             curl_close($ch);
+            if ($codigo !== 200) {
+                error_log('EmailJS reset fallo: HTTP ' . $codigo . ' ' . $errorCurl . ' ' . (is_string($respuesta) ? $respuesta : ''));
+            }
             return $codigo === 200;
         }
 
