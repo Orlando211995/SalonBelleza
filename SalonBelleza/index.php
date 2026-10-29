@@ -255,7 +255,7 @@ $productosDestacados = array_slice($productosDestacados, 0, 4);
 
 <!-- Contacto -->
 
-<section class="contacto-home">
+<section class="contacto-home contacto-visitanos">
 
     <h2>Visítanos</h2>
 
