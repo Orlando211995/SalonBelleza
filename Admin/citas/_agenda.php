@@ -459,7 +459,7 @@ function hora_disponible_para_cita(string $fecha, string $hora, int $duracionMin
     $inicioSalon = timestamp_cita($fecha, (string)$horario['apertura']);
     $finSalon = timestamp_cita($fecha, (string)$horario['cierre']);
 
-    if ($inicio < $inicioSalon || $inicio > $finSalon) {
+    if ($inicio < $inicioSalon || $inicio >= $finSalon) {
         return false;
     }
 
@@ -488,7 +488,7 @@ function generar_horarios_del_dia(string $fecha): array
     $fin = timestamp_cita($fecha, (string)$horario['cierre']);
 
     $horas = [];
-    for ($ts = $inicio; $ts <= $fin; $ts += ($intervalo * 60)) {
+    for ($ts = $inicio; $ts < $fin; $ts += ($intervalo * 60)) {
         $horas[] = date('H:i', $ts);
     }
 
