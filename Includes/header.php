@@ -22,8 +22,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/Assets/css/base.css?v=<?php echo (int)@filemtime(__DIR__ . '/../Assets/css/base.css'); ?>">
-    <link rel="stylesheet" href="/Assets/css/estilos.css?v=<?php echo (int)@filemtime(__DIR__ . '/../Assets/css/estilos.css'); ?>">
+    <?php foreach (['base', 'header', 'banner', 'servicios', 'productos', 'footer', 'responsive'] as $hojaCss): ?>
+    <link rel="stylesheet" href="/Assets/css/<?php echo $hojaCss; ?>.css?v=<?php echo (int)@filemtime(__DIR__ . '/../Assets/css/' . $hojaCss . '.css'); ?>">
+    <?php endforeach; ?>
 
 </head>
 
