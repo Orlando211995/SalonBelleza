@@ -415,10 +415,10 @@ function horario_salon_por_fecha(string $fechaYmd): ?array
     }
 
     if ($diaSemana === 6) {
-        return ['apertura' => '08:00', 'cierre' => '16:00', 'intervalo' => 30];
+        return ['apertura' => '09:00', 'cierre' => '18:00', 'intervalo' => 30];
     }
 
-    return ['apertura' => '08:00', 'cierre' => '18:00', 'intervalo' => 30];
+    return ['apertura' => '11:00', 'cierre' => '21:00', 'intervalo' => 30];
 }
 
 function timestamp_cita(string $fecha, string $hora): int
