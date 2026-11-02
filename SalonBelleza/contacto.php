@@ -45,7 +45,7 @@ include(__DIR__ . '/../Includes/menu.php');
 				</p>
 
 				<p>
-					Horario del salon: Lunes a Viernes 11:00 AM - 09:00 PM, Sabado 09:00 AM - 06:00 PM, Domingo cerrado.
+					Horario del salon: Lunes a sabado 10:00 AM - 08:00 PM, Domingo cerrado.
 				</p>
 
 				<a href="https://wa.me/50689102422?text=Hola%20Alfredo%20Salon%20Estudio%20CR%2C%20quiero%20informacion." class="btn-whatsapp" target="_blank" rel="noopener noreferrer">
