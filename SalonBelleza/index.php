@@ -165,6 +165,12 @@ $productosDestacados = array_slice($productosDestacados, 0, 4);
         <p><?php echo htmlspecialchars($promoMes['texto'], ENT_QUOTES, 'UTF-8'); ?></p>
         <?php endif; ?>
 
+        <a href="cita.php" class="btn-principal">
+
+            Reservar Ahora
+
+        </a>
+
     </div>
 
 </section>
