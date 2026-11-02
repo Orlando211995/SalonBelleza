@@ -55,34 +55,21 @@ if ($estado !== 'Activo' && $estado !== 'Inactivo') {
 $imagenUrl = $servicioActual['imagen'] ?? '';
 
 if (isset($_FILES['imagen']) && ($_FILES['imagen']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
-	$tmpName = $_FILES['imagen']['tmp_name'];
-	$nombreOriginal = $_FILES['imagen']['name'] ?? '';
-	$extension = strtolower(pathinfo($nombreOriginal, PATHINFO_EXTENSION));
-	$permitidas = ['jpg', 'jpeg', 'png', 'webp'];
+	require_once __DIR__ . '/../../Includes/imagenes.php';
+	$resultado = procesarImagenSubida($_FILES['imagen'], __DIR__ . '/../../uploads/servicios', 'srv', opcionesImagenServicio());
+	$nombreArchivo = $resultado['archivo'] ?? '';
 
-	if (!in_array($extension, $permitidas, true)) {
-		$errores[] = 'La imagen debe ser JPG, JPEG, PNG o WEBP.';
+	if (!$resultado['ok']) {
+		$errores[] = $resultado['error'];
 	} else {
-		$carpetaDestino = __DIR__ . '/../../uploads/servicios';
-		if (!is_dir($carpetaDestino)) {
-			mkdir($carpetaDestino, 0777, true);
-		}
-
-		$nombreArchivo = 'srv_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $extension;
-		$rutaDestino = $carpetaDestino . '/' . $nombreArchivo;
-
-		if (!move_uploaded_file($tmpName, $rutaDestino)) {
-			$errores[] = 'No se pudo guardar la nueva imagen del servicio.';
-		} else {
-			$anterior = $servicioActual['imagen'] ?? '';
-			if (is_string($anterior) && strpos($anterior, '/uploads/servicios/') === 0) {
-				$rutaAnterior = __DIR__ . '/../../' . ltrim($anterior, '/');
-				if (is_file($rutaAnterior)) {
-					unlink($rutaAnterior);
-				}
+		$anterior = $servicioActual['imagen'] ?? '';
+		if (is_string($anterior) && strpos($anterior, '/uploads/servicios/') === 0) {
+			$rutaAnterior = __DIR__ . '/../../' . ltrim($anterior, '/');
+			if (is_file($rutaAnterior)) {
+				unlink($rutaAnterior);
 			}
-			$imagenUrl = '/uploads/servicios/' . $nombreArchivo;
 		}
+		$imagenUrl = '/uploads/servicios/' . $nombreArchivo;
 	}
 }
 

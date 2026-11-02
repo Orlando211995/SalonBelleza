@@ -60,35 +60,22 @@ if ($estado !== 'Activo' && $estado !== 'Inactivo') {
 $imagenUrl = $productoActual['imagen'] ?? '';
 
 if (isset($_FILES['imagen']) && ($_FILES['imagen']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
-	$tmpName = $_FILES['imagen']['tmp_name'];
-	$nombreOriginal = $_FILES['imagen']['name'] ?? '';
-	$extension = strtolower(pathinfo($nombreOriginal, PATHINFO_EXTENSION));
-	$permitidas = ['jpg', 'jpeg', 'png', 'webp'];
+	require_once __DIR__ . '/../../Includes/imagenes.php';
+	$resultado = procesarImagenSubida($_FILES['imagen'], __DIR__ . '/../../uploads/productos', 'prod', opcionesImagenProducto());
+	$nombreArchivo = $resultado['archivo'] ?? '';
 
-	if (!in_array($extension, $permitidas, true)) {
-		$errores[] = 'La imagen debe ser JPG, JPEG, PNG o WEBP.';
+	if (!$resultado['ok']) {
+		$errores[] = $resultado['error'];
 	} else {
-		$carpetaDestino = __DIR__ . '/../../uploads/productos';
-		if (!is_dir($carpetaDestino)) {
-			mkdir($carpetaDestino, 0777, true);
-		}
-
-		$nombreArchivo = 'prod_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $extension;
-		$rutaDestino = $carpetaDestino . '/' . $nombreArchivo;
-
-		if (!move_uploaded_file($tmpName, $rutaDestino)) {
-			$errores[] = 'No se pudo guardar la nueva imagen.';
-		} else {
-			$imagenAnterior = $productoActual['imagen'] ?? '';
-			if (is_string($imagenAnterior) && strpos($imagenAnterior, '/uploads/productos/') === 0) {
-				$rutaAnterior = __DIR__ . '/../../' . ltrim($imagenAnterior, '/');
-				if (is_file($rutaAnterior)) {
-					unlink($rutaAnterior);
-				}
+		$imagenAnterior = $productoActual['imagen'] ?? '';
+		if (is_string($imagenAnterior) && strpos($imagenAnterior, '/uploads/productos/') === 0) {
+			$rutaAnterior = __DIR__ . '/../../' . ltrim($imagenAnterior, '/');
+			if (is_file($rutaAnterior)) {
+				unlink($rutaAnterior);
 			}
-
-			$imagenUrl = '/uploads/productos/' . $nombreArchivo;
 		}
+
+		$imagenUrl = '/uploads/productos/' . $nombreArchivo;
 	}
 }
 
