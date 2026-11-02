@@ -54,16 +54,6 @@ include(__DIR__ . '/../Includes/header.php');
 						</div>
 
 						<div class="admin-field">
-							<label for="boton_texto">Texto del botón</label>
-							<input type="text" id="boton_texto" name="boton_texto" maxlength="60" value="<?php echo $e($promo['boton_texto']); ?>">
-						</div>
-
-						<div class="admin-field">
-							<label for="boton_enlace">Enlace del botón</label>
-							<input type="text" id="boton_enlace" name="boton_enlace" maxlength="255" value="<?php echo $e($promo['boton_enlace']); ?>">
-						</div>
-
-						<div class="admin-field">
 							<label for="imagen">Imagen</label>
 							<input type="file" id="imagen" name="imagen" accept=".jpg,.jpeg,.png,.webp">
 							<small>Mínimo 600x300 px. JPG, PNG o WEBP, máximo 5 MB. Si no subes una, se conserva la actual.</small>

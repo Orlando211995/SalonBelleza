@@ -17,8 +17,8 @@ $datos = [
 	'titulo' => trim((string)($_POST['titulo'] ?? '')),
 	'subtitulo' => trim((string)($_POST['subtitulo'] ?? '')),
 	'texto' => trim((string)($_POST['texto'] ?? '')),
-	'boton_texto' => trim((string)($_POST['boton_texto'] ?? '')),
-	'boton_enlace' => trim((string)($_POST['boton_enlace'] ?? '')),
+	'boton_texto' => '',
+	'boton_enlace' => '',
 	'imagen' => $actual['imagen'],
 ];
 
@@ -30,10 +30,6 @@ if ($datos['titulo'] === '') {
 
 if ($datos['subtitulo'] === '') {
 	$errores[] = 'La oferta es obligatoria.';
-}
-
-if (!promocion_enlace_valido($datos['boton_enlace'])) {
-	$errores[] = 'El enlace del botón no es válido. Usa por ejemplo cita.php o una dirección que empiece con https://.';
 }
 
 if (!$errores && isset($_FILES['imagen']) && ($_FILES['imagen']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
