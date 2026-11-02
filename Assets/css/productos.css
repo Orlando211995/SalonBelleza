@@ -285,8 +285,13 @@
 
 .producto-imagen img{
 
-    max-width: 100%;
-    height: auto;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    background: #fff;
     border-radius: 10px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 
