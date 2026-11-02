@@ -1,6 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../Admin/productos/_data.php';
+require_once __DIR__ . '/../Includes/promocion.php';
+
+$promoMes = promocion_obtener();
 
 include(__DIR__ . '/../Includes/header.php');
 include(__DIR__ . '/../Includes/menu.php');
@@ -147,31 +150,33 @@ $productosDestacados = array_slice($productosDestacados, 0, 4);
 
 <!-- Promoción -->
 
+<?php if (!empty($promoMes['activa'])): ?>
 <section class="promo">
 
-    <img src="/Assets/img/promociones/promociones.jpg" alt="Promoción del Mes">
+    <img src="<?php echo htmlspecialchars($promoMes['imagen'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($promoMes['titulo'], ENT_QUOTES, 'UTF-8'); ?>">
 
     <div class="promo-contenido">
 
-        <h2>Promoción del Mes</h2>
+        <h2><?php echo htmlspecialchars($promoMes['titulo'], ENT_QUOTES, 'UTF-8'); ?></h2>
 
-        <h3>20% de descuento en Balayage</h3>
+        <h3><?php echo htmlspecialchars($promoMes['subtitulo'], ENT_QUOTES, 'UTF-8'); ?></h3>
 
-        <p>
+        <?php if ($promoMes['texto'] !== ''): ?>
+        <p><?php echo htmlspecialchars($promoMes['texto'], ENT_QUOTES, 'UTF-8'); ?></p>
+        <?php endif; ?>
 
-            Agenda tu cita antes de finalizar el mes.
+        <?php if ($promoMes['boton_texto'] !== '' && $promoMes['boton_enlace'] !== ''): ?>
+        <a href="<?php echo htmlspecialchars($promoMes['boton_enlace'], ENT_QUOTES, 'UTF-8'); ?>" class="btn-principal">
 
-        </p>
-
-        <a href="cita.php" class="btn-principal">
-
-            Reservar Ahora
+            <?php echo htmlspecialchars($promoMes['boton_texto'], ENT_QUOTES, 'UTF-8'); ?>
 
         </a>
+        <?php endif; ?>
 
     </div>
 
 </section>
+<?php endif; ?>
 
 <!-- Elegirnos -->
 

@@ -8,6 +8,7 @@ $activeCitas = strpos($uriActual, '/Admin/citas/') !== false;
 $activePedidos = strpos($uriActual, '/Admin/pedidos/') !== false;
 $activePagos = strpos($uriActual, '/Admin/pagos/') !== false;
 $activeReportes = strpos($uriActual, '/Admin/reportes/') !== false;
+$activePromocion = strpos($uriActual, '/Admin/promocion/') !== false;
 ?>
 
 <aside class="admin-sidebar" id="adminSidebar">
@@ -24,6 +25,7 @@ $activeReportes = strpos($uriActual, '/Admin/reportes/') !== false;
 		<a class="admin-nav-link <?php echo $activePedidos ? 'active' : ''; ?>" href="/Admin/pedidos/listar.php">🛒 Pedidos</a>
 		<a class="admin-nav-link <?php echo $activePagos ? 'active' : ''; ?>" href="/Admin/pagos/listar.php">💳 Pagos</a>
 		<a class="admin-nav-link <?php echo $activeReportes ? 'active' : ''; ?>" href="/Admin/reportes/index.php">📈 Reportes</a>
+		<a class="admin-nav-link <?php echo $activePromocion ? 'active' : ''; ?>" href="/Admin/promocion/editar.php">🎁 Promoción</a>
 		<a class="admin-nav-link" href="/Admin/login/logout.php">🚪 Cerrar sesion</a>
 	</nav>
 </aside>
