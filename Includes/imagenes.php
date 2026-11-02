@@ -43,6 +43,11 @@ function procesarImagenSubida(array $archivo, string $carpetaDestino, string $pr
 	$proporcion = $opciones['proporcion'] ?? null;
 	$maxAncho = (int)$opciones['max_ancho'];
 	$maxAlto = (int)$opciones['max_alto'];
+	$lado = (int)($opciones['cuadrado'] ?? 0);
+
+	if ($lado > 0 && function_exists('imagecreatetruecolor')) {
+		return normalizarImagenCuadrada($tmp, $tipo, $destino, $nombre, $lado, $ancho, $alto);
+	}
 
 	$necesitaAjuste = $ancho > $maxAncho || $alto > $maxAlto;
 	if ($proporcion !== null && abs(($ancho / $alto) - $proporcion) > 0.02) {
@@ -106,9 +111,51 @@ function procesarImagenSubida(array $archivo, string $carpetaDestino, string $pr
 		: ['ok' => false, 'error' => 'No se pudo procesar la imagen.'];
 }
 
+/** Centra la imagen completa (sin recortar) en un lienzo cuadrado con margen. */
+function normalizarImagenCuadrada(string $tmp, int $tipo, string $destino, string $nombre, int $lado, int $ancho, int $alto): array
+{
+	$origen = match ($tipo) {
+		IMAGETYPE_JPEG => @imagecreatefromjpeg($tmp),
+		IMAGETYPE_PNG => @imagecreatefrompng($tmp),
+		default => function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($tmp) : false,
+	};
+	if (!$origen) {
+		return move_uploaded_file($tmp, $destino)
+			? ['ok' => true, 'archivo' => $nombre]
+			: ['ok' => false, 'error' => 'No se pudo guardar la imagen subida.'];
+	}
+
+	$lienzo = imagecreatetruecolor($lado, $lado);
+	if ($tipo === IMAGETYPE_JPEG) {
+		imagefill($lienzo, 0, 0, imagecolorallocate($lienzo, 255, 255, 255));
+	} else {
+		imagealphablending($lienzo, false);
+		imagesavealpha($lienzo, true);
+		imagefill($lienzo, 0, 0, imagecolorallocatealpha($lienzo, 0, 0, 0, 127));
+	}
+
+	$caja = $lado - 40;
+	$escala = min($caja / $ancho, $caja / $alto);
+	$nw = max(1, (int)round($ancho * $escala));
+	$nh = max(1, (int)round($alto * $escala));
+	imagecopyresampled($lienzo, $origen, (int)(($lado - $nw) / 2), (int)(($lado - $nh) / 2), 0, 0, $nw, $nh, $ancho, $alto);
+
+	$guardado = match ($tipo) {
+		IMAGETYPE_JPEG => imagejpeg($lienzo, $destino, 90),
+		IMAGETYPE_PNG => imagepng($lienzo, $destino, 6),
+		default => imagewebp($lienzo, $destino, 90),
+	};
+	imagedestroy($origen);
+	imagedestroy($lienzo);
+
+	return $guardado
+		? ['ok' => true, 'archivo' => $nombre]
+		: ['ok' => false, 'error' => 'No se pudo procesar la imagen.'];
+}
+
 function opcionesImagenProducto(): array
 {
-	return ['min_ancho' => 400, 'min_alto' => 400, 'max_ancho' => 800, 'max_alto' => 800, 'proporcion' => null];
+	return ['min_ancho' => 400, 'min_alto' => 400, 'max_ancho' => 800, 'max_alto' => 800, 'proporcion' => null, 'cuadrado' => 600];
 }
 
 function opcionesImagenServicio(): array
