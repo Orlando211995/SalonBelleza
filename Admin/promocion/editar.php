@@ -56,7 +56,7 @@ include(__DIR__ . '/../Includes/header.php');
 						<div class="admin-field">
 							<label for="imagen">Imagen</label>
 							<input type="file" id="imagen" name="imagen" accept=".jpg,.jpeg,.png,.webp">
-							<small>Mínimo 600x300 px. JPG, PNG o WEBP, máximo 5 MB. Si no subes una, se conserva la actual.</small>
+							<small>Mínimo 600x300 px. JPG, PNG o WEBP, máximo 5 MB.</small>
 						</div>
 
 						<div class="admin-field">
