@@ -24,7 +24,7 @@ if (!in_array($scriptActual, $rutasPublicas, true)) {
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-	<link rel="stylesheet" href="/Assets/css/admin.css">
+	<link rel="stylesheet" href="/Assets/css/admin.css?v=<?php echo (int)@filemtime(__DIR__ . '/../../Assets/css/admin.css'); ?>">
 </head>
 
 <body>
