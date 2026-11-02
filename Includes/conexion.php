@@ -1,5 +1,37 @@
 <?php
 
+// Repara texto UTF-8 que se guardo mal (ej. "├▒" en lugar de "ñ"), causado por importar SQL desde consola de Windows (CP437).
+if (!function_exists('corregirMojibake')) {
+function corregirMojibake(string $texto): string
+{
+	static $mapa = null;
+	if ($mapa === null) {
+		$altos = 'ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ ';
+		$mapa = [];
+		foreach (preg_split('//u', $altos, -1, PREG_SPLIT_NO_EMPTY) ?: [] as $i => $c) {
+			$mapa[$c] = chr(0x80 + $i);
+		}
+	}
+
+	if ($texto === '' || (!str_contains($texto, '├') && !str_contains($texto, '┬'))) {
+		return $texto;
+	}
+
+	$bytes = '';
+	foreach (preg_split('//u', $texto, -1, PREG_SPLIT_NO_EMPTY) ?: [] as $c) {
+		if (strlen($c) === 1) {
+			$bytes .= $c;
+		} elseif (isset($mapa[$c])) {
+			$bytes .= $mapa[$c];
+		} else {
+			return $texto;
+		}
+	}
+
+	return mb_check_encoding($bytes, 'UTF-8') ? $bytes : $texto;
+}
+}
+
 function obtenerConexionSalon(): ?PDO
 {
 	static $pdoCache = false;

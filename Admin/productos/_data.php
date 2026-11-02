@@ -96,10 +96,10 @@ function productos_cargar_desde_db(): array
     foreach ($filas as $fila) {
         $productos[] = [
             'id' => (int)($fila['id_producto'] ?? 0),
-            'codigo' => (string)($fila['codigo'] ?? ''),
-            'nombre' => (string)($fila['nombre'] ?? ''),
-            'descripcion' => (string)($fila['descripcion'] ?? ''),
-            'categoria' => (string)($fila['categoria'] ?? ''),
+            'codigo' => corregirMojibake((string)($fila['codigo'] ?? '')),
+            'nombre' => corregirMojibake((string)($fila['nombre'] ?? '')),
+            'descripcion' => corregirMojibake((string)($fila['descripcion'] ?? '')),
+            'categoria' => corregirMojibake((string)($fila['categoria'] ?? '')),
             'precio' => (float)($fila['precio'] ?? 0),
             'stock' => (int)($fila['stock'] ?? 0),
             'oferta' => !empty($fila['destacado']),
@@ -157,7 +157,7 @@ function productos_insertar(array $payload): bool
 
     $categoria = trim((string)($payload['categoria'] ?? ''));
     $nombre = trim((string)($payload['nombre'] ?? ''));
-    $descripcion = trim((string)($payload['descripcion'] ?? ''));
+    $descripcion = corregirMojibake(trim((string)($payload['descripcion'] ?? '')));
     $precio = (float)($payload['precio'] ?? 0);
     $stock = (int)($payload['stock'] ?? 0);
     $oferta = !empty($payload['oferta']);
@@ -206,7 +206,7 @@ function productos_actualizar(int $id, array $payload): bool
 
     $categoria = trim((string)($payload['categoria'] ?? ''));
     $nombre = trim((string)($payload['nombre'] ?? ''));
-    $descripcion = trim((string)($payload['descripcion'] ?? ''));
+    $descripcion = corregirMojibake(trim((string)($payload['descripcion'] ?? '')));
     $precio = (float)($payload['precio'] ?? 0);
     $stock = (int)($payload['stock'] ?? 0);
     $oferta = !empty($payload['oferta']);
