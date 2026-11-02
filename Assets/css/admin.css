@@ -288,6 +288,12 @@ body {
 .admin-field {
 	display: grid;
 	gap: 6px;
+	align-content: start;
+}
+
+.admin-field small {
+	color: #9aa4bd;
+	font-size: 12px;
 }
 
 .admin-field-full {
