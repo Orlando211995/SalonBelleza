@@ -61,7 +61,6 @@ include(__DIR__ . '/../Includes/header.php');
 						<div class="admin-field">
 							<label for="boton_enlace">Enlace del botón</label>
 							<input type="text" id="boton_enlace" name="boton_enlace" maxlength="255" value="<?php echo $e($promo['boton_enlace']); ?>">
-							<small>Por ejemplo: cita.php</small>
 						</div>
 
 						<div class="admin-field">
