@@ -129,6 +129,7 @@ include(__DIR__ . '/../Includes/menu.php');
 			<div class="contacto-info">
 				<h3>Reserva tu cita</h3>
 				<p>Agenda tu cita en linea. El sistema te muestra las horas disponibles.</p>
+				<p>Si después de 5 minutos de la hora de tu cita no te presentas ni te comunicas con nosotros, tu cita será cancelada y deberás reagendarla.</p>
 				<p>WhatsApp: 8910-2422</p>
 				<p>Horario del salon: Lunes a sabado 10:00 AM - 08:00 PM, Domingo cerrado.</p>
 
