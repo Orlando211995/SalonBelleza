@@ -104,11 +104,11 @@ function normalizar_hora_hm(string $hora): string
     return $hora;
 }
 
-function cargar_citas_db(array $serviciosIndex): array
+function cargar_citas_db(array $serviciosIndex): ?array
 {
     $pdo = obtenerConexionSalon();
     if (!$pdo) {
-        return [];
+        return null;
     }
 
     $sql = "SELECT ci.id_cita, ci.id_servicio, ci.empleado, ci.fecha, h.hora, ci.observaciones, ci.estado, ci.pago, ci.fecha_creacion,
@@ -298,59 +298,16 @@ function servicio_por_id(int $id, array $serviciosIndex): ?array
     return $serviciosIndex[$id] ?? null;
 }
 
-function citas_seed(array $serviciosIndex): array
-{
-    $seed = [];
-
-    $items = [
-        ['cliente' => 'Maria', 'telefono' => '8888-0001', 'correo' => 'maria@email.com', 'servicio_id' => 1, 'fecha' => '2026-07-25', 'hora' => '09:00', 'estado' => 'Confirmada', 'pago' => 'SINPE'],
-        ['cliente' => 'Jose', 'telefono' => '8888-0002', 'correo' => 'jose@email.com', 'servicio_id' => 3, 'fecha' => '2026-07-25', 'hora' => '09:30', 'estado' => 'Pendiente', 'pago' => 'Efectivo'],
-        ['cliente' => 'Ana', 'telefono' => '8888-0003', 'correo' => 'ana@email.com', 'servicio_id' => 2, 'fecha' => '2026-07-25', 'hora' => '10:00', 'estado' => 'Confirmada', 'pago' => 'SINPE'],
-    ];
-
-    $id = 1;
-    foreach ($items as $item) {
-        $servicio = servicio_por_id((int)$item['servicio_id'], $serviciosIndex);
-        if (!$servicio) {
-            continue;
-        }
-
-        $seed[] = [
-            'id' => $id++,
-            'cliente' => $item['cliente'],
-            'telefono' => $item['telefono'],
-            'correo' => $item['correo'],
-            'servicio_id' => (int)$servicio['id'],
-            'servicio' => (string)$servicio['nombre'],
-            'duracion' => (int)($servicio['duracion'] ?? 30),
-            'empleado' => '',
-            'fecha' => $item['fecha'],
-            'hora' => $item['hora'],
-            'observaciones' => '',
-            'estado' => $item['estado'],
-            'pago' => $item['pago'],
-            'created_at' => date('c'),
-        ];
-    }
-
-    return $seed;
-}
-
 function cargar_citas(array $serviciosIndex): array
 {
     $citasDb = cargar_citas_db($serviciosIndex);
-    if ($citasDb) {
+    if ($citasDb !== null) {
         guardar_json_array(citas_data_file(), $citasDb);
         return $citasDb;
     }
 
     $archivo = citas_data_file();
     $citas = cargar_json_array($archivo);
-
-    if (!$citas) {
-        $citas = citas_seed($serviciosIndex);
-        guardar_json_array($archivo, $citas);
-    }
 
     usort($citas, static function ($a, $b) {
         $keyA = (string)($a['fecha'] ?? '') . ' ' . (string)($a['hora'] ?? '');
