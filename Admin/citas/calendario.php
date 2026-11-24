@@ -60,10 +60,7 @@ include(__DIR__ . '/../Includes/header.php');
                                         <?php
                                         $citaActiva = null;
                                         foreach ($citas as $cita) {
-                                            if (($cita['fecha'] ?? '') !== $fechaBase || !cita_bloquea_espacio($cita)) {
-                                                continue;
-                                            }
-                                            if (cita_se_traslapa($fechaBase, $hora, 30, $cita)) {
+                                            if (cita_ocupa_hora($fechaBase, $hora, $cita)) {
                                                 $citaActiva = $cita;
                                                 break;
                                             }

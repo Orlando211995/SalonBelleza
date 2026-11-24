@@ -128,7 +128,7 @@ include(__DIR__ . '/../Includes/menu.php');
 		<div class="contacto-grid">
 			<div class="contacto-info">
 				<h3>Reserva tu cita</h3>
-				<p>Agenda tu cita en linea. El sistema te muestra solo horas disponibles segun el servicio.</p>
+				<p>Agenda tu cita en linea. El sistema te muestra las horas disponibles.</p>
 				<p>WhatsApp: 8910-2422</p>
 				<p>Horario del salon: Lunes a sabado 10:00 AM - 08:00 PM, Domingo cerrado.</p>
 

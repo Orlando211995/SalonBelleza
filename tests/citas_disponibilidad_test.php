@@ -25,10 +25,18 @@ verificar_cita(hora_cita_texto('10:00') === '10:00 AM', 'Formato de apertura inc
 verificar_cita(hora_cita_texto('19:30') === '07:30 PM', 'Formato de cierre incorrecto.');
 
 $reservada = ['id' => 1, 'fecha' => $lunes, 'hora' => '11:00', 'duracion' => 60, 'estado' => 'Pendiente'];
-$horas = generar_horas_disponibles($lunes, 30, [$reservada]);
-verificar_cita(!in_array('11:00', $horas, true) && !in_array('11:30', $horas, true), 'La reserva debe bloquear su duracion.');
-verificar_cita(in_array('10:30', $horas, true) && in_array('12:00', $horas, true), 'Los horarios contiguos deben seguir disponibles.');
-verificar_cita(!hora_disponible_para_cita($lunes, '10:30', 60, [$reservada]), 'Debe rechazarse un servicio que se traslapa.');
+foreach ([30, 60, 120] as $duracion) {
+    $horas = generar_horas_disponibles($lunes, $duracion, [$reservada]);
+    $esperadas = array_values(array_diff($horasEsperadas, ['11:00']));
+    verificar_cita($horas === $esperadas, 'Solo la hora de inicio reservada debe quedar bloqueada.');
+    verificar_cita(!hora_disponible_para_cita($lunes, '11:00', $duracion, [$reservada]), 'No se debe aceptar la hora reservada.');
+    verificar_cita(hora_disponible_para_cita($lunes, '10:00', $duracion, [$reservada]), 'Las horas anteriores deben seguir disponibles.');
+    verificar_cita(hora_disponible_para_cita($lunes, '10:30', $duracion, [$reservada]), 'Se permite un servicio que termine despues de otra cita.');
+    verificar_cita(hora_disponible_para_cita($lunes, '11:30', $duracion, [$reservada]), 'Las horas posteriores deben seguir disponibles.');
+}
+verificar_cita(hora_disponible_para_cita($lunes, '11:00', 60, [$reservada], 1), 'Al editar se permite conservar la propia hora.');
+verificar_cita(cita_ocupa_hora($lunes, '11:00', $reservada), 'El calendario debe marcar la hora reservada.');
+verificar_cita(!cita_ocupa_hora($lunes, '11:30', $reservada), 'El calendario debe mostrar libre la siguiente hora.');
 verificar_cita(hora_disponible_para_cita($lunes, '19:30', 120, []), 'La ultima cita puede terminar despues del cierre.');
 verificar_cita(!hora_disponible_para_cita($lunes, '20:00', 30, []), 'No debe permitirse empezar a las 20:00.');
 $reservada['estado'] = 'Cancelada';

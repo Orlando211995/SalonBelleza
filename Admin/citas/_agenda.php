@@ -404,23 +404,11 @@ function cita_bloquea_espacio(array $cita): bool
     return !in_array($estado, ['Cancelada', 'No asistio'], true);
 }
 
-function cita_se_traslapa(string $fecha, string $hora, int $duracionMin, array $cita): bool
+function cita_ocupa_hora(string $fecha, string $hora, array $cita): bool
 {
-    if ((string)($cita['fecha'] ?? '') !== $fecha) {
-        return false;
-    }
-
-    if (!cita_bloquea_espacio($cita)) {
-        return false;
-    }
-
-    $inicioNuevo = timestamp_cita($fecha, $hora);
-    $finNuevo = $inicioNuevo + ($duracionMin * 60);
-
-    $inicioExistente = timestamp_cita($fecha, (string)($cita['hora'] ?? '00:00'));
-    $finExistente = $inicioExistente + ((int)($cita['duracion'] ?? 30) * 60);
-
-    return ($inicioNuevo < $finExistente) && ($finNuevo > $inicioExistente);
+    return (string)($cita['fecha'] ?? '') === $fecha
+        && normalizar_hora_hm((string)($cita['hora'] ?? '')) === $hora
+        && cita_bloquea_espacio($cita);
 }
 
 function hora_disponible_para_cita(string $fecha, string $hora, int $duracionMin, array $citas, int $ignorarId = 0): bool
@@ -431,7 +419,6 @@ function hora_disponible_para_cita(string $fecha, string $hora, int $duracionMin
     }
 
     $inicio = timestamp_cita($fecha, $hora);
-    $fin = $inicio + ($duracionMin * 60);
     $inicioSalon = timestamp_cita($fecha, (string)$horario['apertura']);
     $finSalon = timestamp_cita($fecha, (string)$horario['cierre']);
 
@@ -444,7 +431,7 @@ function hora_disponible_para_cita(string $fecha, string $hora, int $duracionMin
             continue;
         }
 
-        if (cita_se_traslapa($fecha, $hora, $duracionMin, $cita)) {
+        if (cita_ocupa_hora($fecha, $hora, $cita)) {
             return false;
         }
     }
