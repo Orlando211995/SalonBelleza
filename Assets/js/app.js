@@ -317,6 +317,7 @@
 		const horaSelect = document.getElementById('hora');
 		const duracionTexto = document.getElementById('citaDuracionTexto');
 		const disponibilidadUrl = form.dataset.disponibilidadUrl || '/Admin/citas/disponibilidad.php';
+		let solicitudActual = 0;
 
 		if (!servicioSelect || !fechaInput || !horaSelect) return;
 
@@ -328,13 +329,19 @@
 			}
 		};
 
-		const poblarHoras = (horas, horaActual = '') => {
-			horaSelect.innerHTML = '<option value="">Seleccionar hora</option>';
+		const poblarHoras = (horas, horaActual = '', mensaje = 'Seleccionar hora') => {
+			horaSelect.innerHTML = '';
+			const placeholder = document.createElement('option');
+			placeholder.value = '';
+			placeholder.textContent = mensaje;
+			horaSelect.appendChild(placeholder);
 
 			horas.forEach((hora) => {
 				const option = document.createElement('option');
 				option.value = hora;
-				option.textContent = hora;
+				const [horas24, minutos] = hora.split(':').map(Number);
+				const horas12 = horas24 % 12 || 12;
+				option.textContent = `${String(horas12).padStart(2, '0')}:${String(minutos).padStart(2, '0')} ${horas24 < 12 ? 'AM' : 'PM'}`;
 				if (horaActual && horaActual === hora) {
 					option.selected = true;
 				}
@@ -343,26 +350,35 @@
 		};
 
 		const actualizarDisponibilidad = async () => {
+			const solicitud = ++solicitudActual;
 			const servicioId = servicioSelect.value;
 			const fecha = fechaInput.value;
+			const horaActual = horaSelect.value;
 
 			if (!servicioId || !fecha) {
 				poblarHoras([]);
 				return;
 			}
 
+			poblarHoras([], '', 'Consultando disponibilidad...');
 			try {
 				const url = `${disponibilidadUrl}?format=json&servicio_id=${encodeURIComponent(servicioId)}&fecha=${encodeURIComponent(fecha)}`;
-				const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+				const response = await fetch(url, { cache: 'no-store', headers: { 'Accept': 'application/json' } });
 				if (!response.ok) {
-					return;
+					throw new Error('No se pudo consultar la disponibilidad.');
 				}
 
 				const payload = await response.json();
-				const horas = Array.isArray(payload.horas_disponibles) ? payload.horas_disponibles : [];
-				poblarHoras(horas, horaSelect.value);
-			} catch (_) {
-				/* Si falla el fetch, mantenemos las horas ya renderizadas por el servidor. */
+				if (!Array.isArray(payload.horas_disponibles)) {
+					throw new Error('Respuesta de disponibilidad no valida.');
+				}
+				if (solicitud !== solicitudActual) return;
+				const horas = payload.horas_disponibles;
+				poblarHoras(horas, horaActual, horas.length ? 'Seleccionar hora' : 'No hay horas disponibles');
+			} catch (error) {
+				if (solicitud !== solicitudActual) return;
+				console.error(error);
+				poblarHoras([], '', 'No se pudo consultar la disponibilidad');
 			}
 		};
 

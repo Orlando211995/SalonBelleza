@@ -25,7 +25,11 @@ if (!$encontrada) {
     exit;
 }
 
-guardar_citas(array_values($citas));
+if (!guardar_citas(array_values($citas))) {
+    $_SESSION['error_cita'] = 'No se pudo eliminar la cita. Intentalo de nuevo.';
+    header('Location: listar.php');
+    exit;
+}
 
 $_SESSION['ok_cita'] = 'Cita eliminada correctamente.';
 header('Location: listar.php');

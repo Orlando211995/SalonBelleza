@@ -80,8 +80,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		'created_at' => date('c'),
 	];
 
-	guardar_citas($citas);
-	$_SESSION['ok_cita_publica'] = 'Tu cita fue registrada y quedo Pendiente de confirmacion.';
+	if (!guardar_citas($citas)) {
+		$_SESSION['errores_cita_publica'] = ['No se pudo guardar la cita. Intentalo de nuevo.'];
+		$_SESSION['old_cita_publica'] = [
+			'cliente' => $cliente,
+			'telefono' => $telefono,
+			'correo' => $correo,
+			'servicio_id' => (string)$servicioId,
+			'fecha' => $fecha,
+			'hora' => $hora,
+			'observaciones' => $observaciones,
+		];
+		header('Location: cita.php');
+		exit;
+	}
+	$_SESSION['ok_cita_publica'] = 'Tu cita fue registrada.';
 	header('Location: cita.php');
 	exit;
 }
@@ -177,7 +190,7 @@ include(__DIR__ . '/../Includes/menu.php');
 							<option value="">Seleccionar hora</option>
 							<?php $horaOld = (string)($old['hora'] ?? ''); ?>
 							<?php foreach ($horasDisponibles as $hora): ?>
-								<option value="<?php echo htmlspecialchars($hora, ENT_QUOTES, 'UTF-8'); ?>" <?php echo $horaOld === $hora ? 'selected' : ''; ?>><?php echo htmlspecialchars($hora, ENT_QUOTES, 'UTF-8'); ?></option>
+								<option value="<?php echo htmlspecialchars($hora, ENT_QUOTES, 'UTF-8'); ?>" <?php echo $horaOld === $hora ? 'selected' : ''; ?>><?php echo htmlspecialchars(hora_cita_texto($hora), ENT_QUOTES, 'UTF-8'); ?></option>
 							<?php endforeach; ?>
 						</select>
 					</div>

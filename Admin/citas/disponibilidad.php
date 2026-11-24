@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/_agenda.php';
 
+header('Cache-Control: no-store, max-age=0');
+
 $servicioId = isset($_GET['servicio_id']) ? (int)$_GET['servicio_id'] : 0;
 $fecha = trim($_GET['fecha'] ?? date('Y-m-d'));
 $format = trim($_GET['format'] ?? 'html');

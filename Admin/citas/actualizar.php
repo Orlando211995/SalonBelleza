@@ -41,7 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['accion'], $_GET['id']))
         exit;
     }
 
-    guardar_citas($citas);
+    if (!guardar_citas($citas)) {
+        $_SESSION['error_cita'] = 'No se pudo actualizar la cita. Intentalo de nuevo.';
+        header('Location: listar.php');
+        exit;
+    }
     $_SESSION['ok_cita'] = 'Estado de cita actualizado.';
     header('Location: listar.php');
     exit;
@@ -142,7 +146,11 @@ $citas[$indice]['observaciones'] = $observaciones;
 $citas[$indice]['estado'] = $estado;
 $citas[$indice]['pago'] = $pago;
 
-guardar_citas($citas);
+if (!guardar_citas($citas)) {
+    $_SESSION['error_cita'] = 'No se pudo actualizar la cita. Intentalo de nuevo.';
+    header('Location: listar.php');
+    exit;
+}
 
 $_SESSION['ok_cita'] = 'Cita actualizada correctamente.';
 header('Location: listar.php');

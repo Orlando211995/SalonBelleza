@@ -277,6 +277,7 @@ function guardar_citas_db(array $citas): bool
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
         }
+        error_log('Error al guardar citas: ' . $e->getMessage());
         return false;
     }
 }
@@ -318,10 +319,19 @@ function cargar_citas(array $serviciosIndex): array
     return $citas;
 }
 
-function guardar_citas(array $citas): void
+function guardar_citas(array $citas): bool
 {
-    guardar_citas_db($citas);
-    guardar_json_array(citas_data_file(), $citas);
+    if (obtenerConexionSalon() && !guardar_citas_db($citas)) {
+        return false;
+    }
+
+    $json = json_encode(array_values($citas), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    if ($json === false || file_put_contents(citas_data_file(), $json, LOCK_EX) === false) {
+        error_log('No se pudo guardar la copia local de citas.');
+        return obtenerConexionSalon() !== null;
+    }
+
+    return true;
 }
 
 function siguiente_cita_id(array $citas): int
@@ -356,6 +366,15 @@ function hora_valida_hm(string $hora): bool
 {
     $dt = DateTimeImmutable::createFromFormat('H:i', $hora);
     return $dt && $dt->format('H:i') === $hora;
+}
+
+function hora_cita_texto(string $hora): string
+{
+    $fecha = DateTimeImmutable::createFromFormat('!H:i', $hora);
+    if (!$fecha || $fecha->format('H:i') !== $hora) {
+        throw new InvalidArgumentException('Hora de cita no valida.');
+    }
+    return $fecha->format('h:i A');
 }
 
 function horario_salon_por_fecha(string $fechaYmd): ?array
