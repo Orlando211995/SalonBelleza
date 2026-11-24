@@ -128,6 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	$nuevoId = $maxId + 1;
 	$numeroPedido = 'PED-' . str_pad((string)(1000 + $nuevoId), 4, '0', STR_PAD_LEFT);
+	$fechaPedido = pedido_fecha_local(new DateTimeImmutable());
 
 	$pedidos[] = [
 		'id' => $nuevoId,
@@ -142,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		'costo_envio' => $envio,
 		'total' => $total,
 		'observaciones' => $observaciones,
-		'fecha' => date('Y-m-d H:i:s'),
+		'fecha' => $fechaPedido,
 		'items' => $itemsPedido,
 		'comprobante' => $comprobanteUrl,
 	];
@@ -168,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		'numero' => $numeroPedido,
 		'metodo' => 'SINPE Movil',
 		'monto' => $total,
-		'fecha' => date('Y-m-d H:i:s'),
+		'fecha' => $fechaPedido,
 		'estado' => 'Pendiente',
 		'comprobante' => $comprobanteUrl,
 		'observaciones' => $observaciones,

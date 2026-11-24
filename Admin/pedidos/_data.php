@@ -17,6 +17,11 @@ function pedidos_metodos_pago_validos(): array
     return ['SINPE'];
 }
 
+function pedido_fecha_local(DateTimeImmutable $instante): string
+{
+    return $instante->setTimezone(new DateTimeZone('America/Costa_Rica'))->format('Y-m-d H:i:s');
+}
+
 function pedidos_seed(): array
 {
     return [
