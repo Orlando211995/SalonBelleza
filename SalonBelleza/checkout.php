@@ -306,7 +306,7 @@ include(__DIR__ . '/../Includes/menu.php');
 					<div class="checkout-comprobante-box">
 
 						<p>
-							Hace tu pago al <strong>8910-2422</strong> a nombre de Alfredo Azuola y adjunta el comprobante usando el boton de abajo.
+							Hace tu pago al <strong>8910-2422</strong> a nombre de <strong>Alfredo Azuola</strong> y adjunta el comprobante usando el boton de abajo.
 							En cuanto lo validemos, procesaremos tu orden de inmediato.
 						</p>
 
